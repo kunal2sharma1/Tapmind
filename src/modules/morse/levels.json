@@ -1,0 +1,12 @@
+[
+  { "level": 1, "label": "Dot vs Dash", "letter": null, "morse": null },
+  { "level": 2, "label": "E (.)", "letter": "E", "morse": "." },
+  { "level": 3, "label": "T (-)", "letter": "T", "morse": "-" },
+  { "level": 4, "label": "A (.-)", "letter": "A", "morse": ".-" },
+  { "level": 5, "label": "N (-.)", "letter": "N", "morse": "-." },
+  { "level": 6, "label": "I (..)", "letter": "I", "morse": ".." },
+  { "level": 7, "label": "M (--)", "letter": "M", "morse": "--" },
+  { "level": 8, "label": "S (...)", "letter": "S", "morse": "..." },
+  { "level": 9, "label": "O (---)", "letter": "O", "morse": "---" },
+  { "level": 10, "label": "Mixed Practice", "letter": null, "morse": null }
+]

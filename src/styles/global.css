@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --navy:        #0d1117;
+  --surface:     #161b22;
+  --surface-2:   #1e2530;
+  --surface-3:   #252d38;
+  --border:      #30363d;
+  --border-soft: #21282f;
+
+  --accent:      #4ade80;
+  --accent-dim:  #22543d;
+  --accent-glow: rgba(74, 222, 128, 0.15);
+
+  --amber:       #fbbf24;
+  --amber-dim:   #78350f;
+
+  --blue:        #60a5fa;
+  --blue-dim:    #1e3a5f;
+
+  --text-primary:   #e6edf3;
+  --text-secondary: #8b949e;
+  --text-muted:     #484f58;
+
+  --navbar-h: 56px;
+  --sidebar-w: 200px;
+  --radius:   10px;
+  --radius-sm: 6px;
+
+  --font-mono: 'Space Mono', monospace;
+  --font-sans: 'DM Sans', sans-serif;
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.25);
+}
+
+html, body, #root {
+  height: 100%;
+  background: var(--navy);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Shell ─────────────────────────────────────────────────── */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  padding-top: var(--navbar-h);
+}
+
+/* ── Scrollbars ─────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
