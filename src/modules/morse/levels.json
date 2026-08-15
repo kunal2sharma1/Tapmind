@@ -8,10 +8,7 @@
     "practiceMode": "free",
     "practiceRepeats": 3,
     "assessment": {
-      "enabled": true,
-      "scope": "all-learned",
-      "questionCount": 3,
-      "passPercent": 0.67
+      "enabled": false
     }
   },
   {
