@@ -21,9 +21,17 @@ export const PROGRESS_STATES = Object.freeze({
   COMPLETED: "completed"
 });
 
+export function getLevelId(level) {
+  return level.id ?? `level-${level.level}`;
+}
+
+export function getCharacterId(level) {
+  return level.morse ? level.id ?? `morse-${level.level}` : null;
+}
+
 export function createCharacter(level) {
   return {
-    id: level.id ?? `morse-${level.level}`,
+    id: getCharacterId(level),
     moduleId: level.moduleId ?? "morse",
     level: level.level,
     letter: level.letter ?? null,
@@ -35,21 +43,21 @@ export function createCharacter(level) {
 
 export function createExercise(level, type) {
   return {
-    id: `${level.id ?? `level-${level.level`}-${type}`}`,
+    id: `${getLevelId(level)}-${type}`,
     type,
-    levelId: level.id ?? `level-${level.level}`,
-    characterId: level.morse ? level.id ?? `morse-${level.level}` : null
+    levelId: getLevelId(level),
+    characterId: getCharacterId(level)
   };
 }
 
 export function createLesson(level) {
   return {
-    id: level.id ?? `level-${level.level}`,
+    id: getLevelId(level),
     moduleId: level.moduleId ?? "morse",
     level: level.level,
     title: level.title ?? level.label,
     type: level.type,
-    characterId: level.morse ? level.id ?? `morse-${level.level}` : null,
+    characterId: getCharacterId(level),
     practice: {
       mode: level.practiceMode ?? "none",
       repeats: level.practiceRepeats ?? 0
@@ -59,11 +67,13 @@ export function createLesson(level) {
       scope: level.assessment?.scope ?? "current",
       questionCount: level.assessment?.questionCount ?? 0,
       passPercent: level.assessment?.passPercent ?? 1
-    }
+    },
+    exerciseTypes: getExerciseTypes(level)
   };
 }
 
 export function createAttempt({
+  id,
   sessionId,
   exerciseId,
   characterId = null,
@@ -73,7 +83,7 @@ export function createAttempt({
   durationMs = null
 }) {
   return {
-    id: `${sessionId}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+    id,
     sessionId,
     exerciseId,
     characterId,
@@ -85,9 +95,9 @@ export function createAttempt({
   };
 }
 
-export function createSession({ moduleId = "morse", lessonId }) {
+export function createSession({ moduleId = "morse", lessonId, id }) {
   return {
-    id: `${moduleId}-${lessonId}-${Date.now()}`,
+    id,
     moduleId,
     lessonId,
     startedAt: new Date().toISOString(),
