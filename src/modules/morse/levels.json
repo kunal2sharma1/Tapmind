@@ -5,7 +5,7 @@
     "type": "foundation",
     "letter": null,
     "morse": null,
-    "practiceMode": "free",
+    "practiceMode": "binary",
     "practiceRepeats": 3,
     "assessment": {
       "enabled": false
