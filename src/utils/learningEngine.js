@@ -1,3 +1,5 @@
+import { createLesson, getLevelId } from "../domain/model";
+
 export function shuffle(items) {
   const copy = [...items];
 
@@ -12,11 +14,14 @@ export function shuffle(items) {
 export function getAssessableLevels(levels, currentLevel) {
   if (!Array.isArray(levels) || !currentLevel) return [];
 
-  if (currentLevel.assessment?.scope === "all-learned") {
+  const lesson = createLesson(currentLevel);
+  const scope = lesson.assessment.scope;
+
+  if (scope === "all-learned") {
     return levels.filter((level) => level.morse && level.level <= currentLevel.level);
   }
 
-  if (currentLevel.assessment?.scope === "module") {
+  if (scope === "module") {
     return levels.filter((level) => level.morse);
   }
 
@@ -28,28 +33,31 @@ export function getTestLength(pool, requestedLength = 6) {
   return Math.min(Math.max(requestedLength, 1), Math.max(pool.length, 1));
 }
 
+export function getRequestedAssessmentCount(currentLevel) {
+  return createLesson(currentLevel).assessment.questionCount;
+}
+
 export function generateAssessment(levels, currentLevel) {
   const pool = getAssessableLevels(levels, currentLevel);
   if (!pool.length) return [];
 
-  const requestedLength = currentLevel.assessment?.questionCount ?? 6;
+  const requestedLength = getRequestedAssessmentCount(currentLevel) || 6;
   const questionCount = getTestLength(pool, requestedLength);
   const questions = [];
 
-  // Always assess the current lesson when it represents a character.
   if (currentLevel.morse) {
     questions.push(currentLevel);
   }
 
-  const remaining = shuffle(pool.filter((level) => level.level !== currentLevel.level));
+  const remaining = shuffle(
+    pool.filter((level) => getLevelId(level) !== getLevelId(currentLevel))
+  );
 
   for (const question of remaining) {
     if (questions.length >= questionCount) break;
     questions.push(question);
   }
 
-  // When the pool is smaller than the requested test length, repeat questions
-  // deliberately rather than introducing uncontrolled random duplicates.
   let repeatIndex = 0;
   while (questions.length < questionCount) {
     questions.push(pool[repeatIndex % pool.length]);
