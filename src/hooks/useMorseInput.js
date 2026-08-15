@@ -1,56 +1,53 @@
-import { useState, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
-const DOT_THRESHOLD_MS = 200; // presses shorter than this = dot
+const DOT_THRESHOLD_MS = 200;
+const MAX_SEQUENCE_LENGTH = 10;
 
 export default function useMorseInput() {
   const [inputSequence, setInputSequence] = useState("");
-  const [isPressed, setIsPressed]         = useState(false);
-
-  // useRef so the keydown handler always sees the latest timestamp
+  const [isPressed, setIsPressed] = useState(false);
   const pressStartTime = useRef(null);
 
   useEffect(() => {
-    function handleKeyDown(e) {
-      // Only spacebar; ignore auto-repeat (held key)
-      if (e.code !== "Space" || e.repeat) return;
-      e.preventDefault(); // stop page scroll
-
+    function handleKeyDown(event) {
+      if (event.code !== "Space" || event.repeat) return;
+      event.preventDefault();
       pressStartTime.current = Date.now();
       setIsPressed(true);
     }
 
-    function handleKeyUp(e) {
-      if (e.code !== "Space") return;
-      e.preventDefault();
+    function handleKeyUp(event) {
+      if (event.code !== "Space") return;
+      event.preventDefault();
 
       if (pressStartTime.current === null) return;
 
       const pressDuration = Date.now() - pressStartTime.current;
       const symbol = pressDuration < DOT_THRESHOLD_MS ? "." : "-";
 
-      setInputSequence((prev) => {
-        if (prev.length >= 10) return prev;
-        return prev + symbol;
+      setInputSequence((previous) => {
+        if (previous.length >= MAX_SEQUENCE_LENGTH) return previous;
+        return previous + symbol;
       });
+
       pressStartTime.current = null;
       setIsPressed(false);
     }
 
     window.addEventListener("keydown", handleKeyDown);
-    window.addEventListener("keyup",   handleKeyUp);
+    window.addEventListener("keyup", handleKeyUp);
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
-      window.removeEventListener("keyup",   handleKeyUp);
+      window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []); // empty deps — handlers reference refs, not stale closures
+  }, []);
 
-  // Clears sequence and resets press state (called by Retry)
-  function resetInput() {
+  const resetInput = useCallback(() => {
     setInputSequence("");
     setIsPressed(false);
     pressStartTime.current = null;
-  }
+  }, []);
 
   return { inputSequence, isPressed, resetInput };
 }
