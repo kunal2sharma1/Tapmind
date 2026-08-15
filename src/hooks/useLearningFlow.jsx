@@ -77,9 +77,16 @@ export default function useLearningFlow({
     setPracticeCount(next);
     resetInput();
 
-    if (next >= target) {
-      enterTestMode();
+    if (next < target) return;
+
+    if (currentLevel.assessment?.enabled === false) {
+      completeLevel(currentLevel.level);
+      setPassed(true);
+      setMode("result");
+      return;
     }
+
+    enterTestMode();
   }
 
   function handleCheck() {
@@ -153,9 +160,7 @@ export default function useLearningFlow({
       setPassed(didPass);
       setMode("result");
 
-      if (didPass) {
-        completeLevel(currentLevel.level);
-      }
+      if (didPass) completeLevel(currentLevel.level);
       return;
     }
 
