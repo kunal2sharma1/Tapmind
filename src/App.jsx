@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import MainContent from "./components/MainContent";
 import levelsData from "./modules/morse/levels.json";
 import useProgress from "./hooks/useProgress";
+import { buildCurriculum, getLessonByLevel } from "./domain/curriculum";
 import "./styles/global.css";
 
 export default function App() {
@@ -11,8 +12,12 @@ export default function App() {
   const [activeNav, setActiveNav] = useState("Learning");
   const [selectedLevel, setSelectedLevel] = useState(progress.currentLevel || 1);
 
-  const levels = levelsData;
-  const currentLevel = levels.find((level) => level.level === selectedLevel) || levels[0];
+  const curriculum = buildCurriculum(levelsData);
+  const levels = curriculum.map((item) => item.raw);
+  const currentItem = getLessonByLevel(curriculum, selectedLevel) || curriculum[0];
+  const currentLevel = currentItem.raw;
+  const currentLesson = currentItem.lesson;
+  const currentCharacter = currentItem.character;
 
   function handleLevelSelect(levelNumber) {
     if (!isLevelUnlocked(levelNumber)) return;
@@ -35,6 +40,8 @@ export default function App() {
           selectedLevel={selectedLevel}
           activeNav={activeNav}
           currentLevel={currentLevel}
+          currentLesson={currentLesson}
+          currentCharacter={currentCharacter}
           levels={levels}
           onLevelSelect={handleLevelSelect}
           recordAttempt={recordAttempt}
