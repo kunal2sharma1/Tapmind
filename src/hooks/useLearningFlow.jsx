@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import generateTestQuestions from "../utils/testGenerator";
-import { calculatePass } from "../utils/learningEngine";
+import { createExercise, createLesson } from "../domain/model";
+import { generateAssessment, calculatePass } from "../utils/learningEngine";
 
 export default function useLearningFlow({
   currentLevel,
+  currentLesson,
   levels,
   inputSequence,
   resetInput,
@@ -22,9 +23,17 @@ export default function useLearningFlow({
   const [correctAnswer, setCorrectAnswer] = useState("");
 
   const testQuestions = useRef([]);
+  const lesson = currentLesson ?? createLesson(currentLevel ?? {});
 
   function enterTestMode() {
-    testQuestions.current = generateTestQuestions(levels, currentLevel);
+    if (!lesson.assessment.enabled) {
+      completeLevel(currentLevel.level);
+      setPassed(true);
+      setMode("result");
+      return;
+    }
+
+    testQuestions.current = generateAssessment(levels, currentLevel);
     setTestIndex(0);
     setScore(0);
     setPassed(false);
@@ -51,14 +60,14 @@ export default function useLearningFlow({
 
   useEffect(() => {
     if (mode !== "practice" || !currentLevel) return;
-    if (currentLevel.practiceMode !== "match") return;
+    if (lesson.practice.mode !== "match") return;
     if (!currentLevel.morse) return;
 
     if (inputSequence.length === currentLevel.morse.length) {
       const timer = setTimeout(() => handleCheck(), 100);
       return () => clearTimeout(timer);
     }
-  }, [inputSequence, mode, currentLevel]);
+  }, [inputSequence, mode, currentLevel, lesson.practice.mode]);
 
   useEffect(() => {
     if (mode !== "test" || !currentQuestion) return;
@@ -70,7 +79,7 @@ export default function useLearningFlow({
   }, [inputSequence, mode, currentQuestion]);
 
   function advancePractice() {
-    const target = currentLevel.practiceRepeats ?? 3;
+    const target = lesson.practice.repeats;
     const next = practiceCount + 1;
 
     setFeedback("");
@@ -79,14 +88,6 @@ export default function useLearningFlow({
     resetInput();
 
     if (next < target) return;
-
-    if (currentLevel.assessment?.enabled === false) {
-      completeLevel(currentLevel.level);
-      setPassed(true);
-      setMode("result");
-      return;
-    }
-
     enterTestMode();
   }
 
@@ -94,12 +95,12 @@ export default function useLearningFlow({
     if (mode === "practice") {
       if (!currentLevel) return;
 
-      if (currentLevel.practiceMode === "none") {
+      if (lesson.practice.mode === "none") {
         enterTestMode();
         return;
       }
 
-      if (currentLevel.practiceMode === "binary") {
+      if (lesson.practice.mode === "binary") {
         if (!inputSequence || ![".", "-"].includes(inputSequence)) return;
         applyCorrect();
         setFeedback("correct");
@@ -110,7 +111,8 @@ export default function useLearningFlow({
       if (!currentLevel.morse || !inputSequence) return;
 
       const correct = inputSequence === currentLevel.morse;
-      recordAttempt(currentLevel, correct);
+      const exercise = createExercise(currentLevel, "character-reproduction");
+      recordAttempt(currentLevel, correct, exercise);
 
       if (correct) {
         applyCorrect();
@@ -123,7 +125,6 @@ export default function useLearningFlow({
         setCorrectAnswer(currentLevel.morse);
         setTimeout(resetInput, 600);
       }
-
       return;
     }
 
@@ -131,7 +132,8 @@ export default function useLearningFlow({
       if (!currentQuestion || !inputSequence) return;
 
       const correct = inputSequence === currentQuestion.morse;
-      recordAttempt(currentQuestion, correct);
+      const exercise = createExercise(currentLevel, "mixed-assessment");
+      recordAttempt(currentQuestion, correct, exercise);
 
       if (correct) {
         applyCorrect();
@@ -158,7 +160,7 @@ export default function useLearningFlow({
       const didPass = calculatePass(
         nextScore,
         testTotal,
-        currentLevel.assessment?.passPercent ?? 0.8
+        lesson.assessment.passPercent
       );
 
       setPassed(didPass);
@@ -192,14 +194,14 @@ export default function useLearningFlow({
     setFeedback("");
     setCorrectAnswer("");
     resetInput();
-    setMode(currentLevel.practiceMode === "none" ? "learn" : "practice");
+    setMode(lesson.practice.mode === "none" ? "learn" : "practice");
   }
 
   function startPractice() {
     setPracticeCount(0);
     resetInput();
 
-    if (currentLevel?.practiceMode === "none") {
+    if (lesson.practice.mode === "none") {
       enterTestMode();
       return;
     }
