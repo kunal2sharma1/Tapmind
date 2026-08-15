@@ -51,7 +51,8 @@ export default function useLearningFlow({
 
   useEffect(() => {
     if (mode !== "practice" || !currentLevel) return;
-    if (!currentLevel.morse || currentLevel.practiceMode !== "match") return;
+    if (currentLevel.practiceMode !== "match") return;
+    if (!currentLevel.morse) return;
 
     if (inputSequence.length === currentLevel.morse.length) {
       const timer = setTimeout(() => handleCheck(), 100);
@@ -98,8 +99,11 @@ export default function useLearningFlow({
         return;
       }
 
-      if (currentLevel.practiceMode === "free") {
-        advancePractice();
+      if (currentLevel.practiceMode === "binary") {
+        if (!inputSequence || ![".", "-"].includes(inputSequence)) return;
+        applyCorrect();
+        setFeedback("correct");
+        setTimeout(advancePractice, 300);
         return;
       }
 
