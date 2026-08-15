@@ -1,12 +1,152 @@
 [
-  { "level": 1, "label": "Dot vs Dash", "letter": null, "morse": null },
-  { "level": 2, "label": "E (.)", "letter": "E", "morse": "." },
-  { "level": 3, "label": "T (-)", "letter": "T", "morse": "-" },
-  { "level": 4, "label": "A (.-)", "letter": "A", "morse": ".-" },
-  { "level": 5, "label": "N (-.)", "letter": "N", "morse": "-." },
-  { "level": 6, "label": "I (..)", "letter": "I", "morse": ".." },
-  { "level": 7, "label": "M (--)", "letter": "M", "morse": "--" },
-  { "level": 8, "label": "S (...)", "letter": "S", "morse": "..." },
-  { "level": 9, "label": "O (---)", "letter": "O", "morse": "---" },
-  { "level": 10, "label": "Mixed Practice", "letter": null, "morse": null }
+  {
+    "level": 1,
+    "label": "Dot vs Dash",
+    "type": "foundation",
+    "letter": null,
+    "morse": null,
+    "practiceMode": "free",
+    "practiceRepeats": 3,
+    "assessment": {
+      "enabled": true,
+      "scope": "all-learned",
+      "questionCount": 3,
+      "passPercent": 0.67
+    }
+  },
+  {
+    "level": 2,
+    "label": "E (.)",
+    "type": "character",
+    "letter": "E",
+    "morse": ".",
+    "practiceMode": "match",
+    "practiceRepeats": 3,
+    "assessment": {
+      "enabled": true,
+      "scope": "all-learned",
+      "questionCount": 3,
+      "passPercent": 0.67
+    }
+  },
+  {
+    "level": 3,
+    "label": "T (-)",
+    "type": "character",
+    "letter": "T",
+    "morse": "-",
+    "practiceMode": "match",
+    "practiceRepeats": 3,
+    "assessment": {
+      "enabled": true,
+      "scope": "all-learned",
+      "questionCount": 4,
+      "passPercent": 0.75
+    }
+  },
+  {
+    "level": 4,
+    "label": "A (.-)",
+    "type": "character",
+    "letter": "A",
+    "morse": ".-",
+    "practiceMode": "match",
+    "practiceRepeats": 3,
+    "assessment": {
+      "enabled": true,
+      "scope": "all-learned",
+      "questionCount": 5,
+      "passPercent": 0.8
+    }
+  },
+  {
+    "level": 5,
+    "label": "N (-.)",
+    "type": "character",
+    "letter": "N",
+    "morse": "-.",
+    "practiceMode": "match",
+    "practiceRepeats": 3,
+    "assessment": {
+      "enabled": true,
+      "scope": "all-learned",
+      "questionCount": 5,
+      "passPercent": 0.8
+    }
+  },
+  {
+    "level": 6,
+    "label": "I (..)",
+    "type": "character",
+    "letter": "I",
+    "morse": "..",
+    "practiceMode": "match",
+    "practiceRepeats": 3,
+    "assessment": {
+      "enabled": true,
+      "scope": "all-learned",
+      "questionCount": 6,
+      "passPercent": 0.8
+    }
+  },
+  {
+    "level": 7,
+    "label": "M (--)",
+    "type": "character",
+    "letter": "M",
+    "morse": "--",
+    "practiceMode": "match",
+    "practiceRepeats": 3,
+    "assessment": {
+      "enabled": true,
+      "scope": "all-learned",
+      "questionCount": 6,
+      "passPercent": 0.8
+    }
+  },
+  {
+    "level": 8,
+    "label": "S (...)",
+    "type": "character",
+    "letter": "S",
+    "morse": "...",
+    "practiceMode": "match",
+    "practiceRepeats": 3,
+    "assessment": {
+      "enabled": true,
+      "scope": "all-learned",
+      "questionCount": 6,
+      "passPercent": 0.8
+    }
+  },
+  {
+    "level": 9,
+    "label": "O (---)",
+    "type": "character",
+    "letter": "O",
+    "morse": "---",
+    "practiceMode": "match",
+    "practiceRepeats": 3,
+    "assessment": {
+      "enabled": true,
+      "scope": "all-learned",
+      "questionCount": 6,
+      "passPercent": 0.8
+    }
+  },
+  {
+    "level": 10,
+    "label": "Mixed Review",
+    "type": "review",
+    "letter": null,
+    "morse": null,
+    "practiceMode": "none",
+    "practiceRepeats": 0,
+    "assessment": {
+      "enabled": true,
+      "scope": "all-learned",
+      "questionCount": 6,
+      "passPercent": 0.8
+    }
+  }
 ]
