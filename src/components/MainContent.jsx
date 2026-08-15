@@ -8,6 +8,8 @@ export default function MainContent({
   selectedLevel,
   activeNav,
   currentLevel,
+  currentLesson,
+  currentCharacter,
   levels,
   onLevelSelect,
   recordAttempt,
@@ -40,6 +42,7 @@ export default function MainContent({
     startPractice,
   } = useLearningFlow({
     currentLevel,
+    currentLesson,
     levels,
     inputSequence,
     resetInput,
@@ -120,15 +123,15 @@ export default function MainContent({
           ) : (
             <>
               <div className="instruction-display">
-                <span className="instruction-letter">{currentLevel.letter}</span>
-                <span className="instruction-morse">{currentLevel.morse}</span>
+                <span className="instruction-letter">{currentCharacter?.letter}</span>
+                <span className="instruction-morse">{currentCharacter?.morse}</span>
               </div>
               <p className="instruction-hint">Memorize this pattern</p>
             </>
           )}
           <div className="controls-section" style={{ marginTop: 16 }}>
             <button className="ctrl-btn btn-next" onClick={startPractice}>
-              {currentLevel.practiceMode === "none" ? "Start Review →" : "Start Practice →"}
+              {currentLesson?.practice.mode === "none" ? "Start Review →" : "Start Practice →"}
             </button>
           </div>
         </section>
@@ -136,7 +139,7 @@ export default function MainContent({
     }
 
     if (mode === "practice") {
-      const target = currentLevel.practiceRepeats ?? 3;
+      const target = currentLesson?.practice.repeats ?? 3;
 
       return (
         <section className="card instruction-card">
@@ -159,14 +162,14 @@ export default function MainContent({
     }
 
     if (mode === "result") {
-      const isAssessment = currentLevel.assessment?.enabled !== false;
+      const isAssessment = currentLesson?.assessment.enabled;
       return (
         <section className="card instruction-card">
           <p className="card-label">Result</p>
           {isAssessment ? (
             <div>{score} / {testTotal}</div>
           ) : (
-            <div>{practiceCount} / {currentLevel.practiceRepeats}</div>
+            <div>{practiceCount} / {currentLesson?.practice.repeats}</div>
           )}
           <p>{passed ? "Level Complete" : "Try Again"}</p>
         </section>
