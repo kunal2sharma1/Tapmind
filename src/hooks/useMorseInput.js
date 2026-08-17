@@ -49,6 +49,12 @@ export default function useMorseInput(options = {}) {
     return event;
   }, [syncSnapshot]);
 
+  const setCalibration = useCallback((nextCalibration) => {
+    const calibration = sessionRef.current.setCalibration(nextCalibration);
+    syncSnapshot();
+    return calibration;
+  }, [syncSnapshot]);
+
   useEffect(() => {
     function handleKeyDown(event) {
       if (event.code !== "Space" || event.repeat) return;
@@ -107,6 +113,7 @@ export default function useMorseInput(options = {}) {
     calibration: snapshot.calibration,
     startPress,
     endPress,
+    setCalibration,
     handlePointerDown,
     handlePointerUp,
     handlePointerCancel,
