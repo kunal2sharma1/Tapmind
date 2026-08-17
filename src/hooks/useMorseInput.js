@@ -1,37 +1,65 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  createMorseInputSession,
+  MORSE_INPUT_DEFAULTS,
+  MORSE_INPUT_DEVICES,
+  normalizePressDuration
+} from "../modules/morse/input";
 
-const DOT_THRESHOLD_MS = 200;
-const MAX_SEQUENCE_LENGTH = 10;
+export default function useMorseInput(options = {}) {
+  const sessionRef = useRef(null);
+  const pressStartedAt = useRef(null);
+  const [snapshot, setSnapshot] = useState(() => ({
+    sequence: "",
+    isPressed: false,
+    activeDevice: null,
+    events: [],
+    timing: null,
+    calibration: null
+  }));
 
-export default function useMorseInput() {
-  const [inputSequence, setInputSequence] = useState("");
-  const [isPressed, setIsPressed] = useState(false);
-  const pressStartTime = useRef(null);
+  if (sessionRef.current === null) {
+    sessionRef.current = createMorseInputSession({
+      ...MORSE_INPUT_DEFAULTS,
+      ...options
+    });
+  }
+
+  const syncSnapshot = useCallback(() => {
+    setSnapshot(sessionRef.current.snapshot());
+  }, []);
+
+  const startPress = useCallback((device = MORSE_INPUT_DEVICES.KEYBOARD) => {
+    if (pressStartedAt.current !== null) return;
+    pressStartedAt.current = performance.now();
+    sessionRef.current.startPress({
+      device,
+      timestamp: pressStartedAt.current
+    });
+    syncSnapshot();
+  }, [syncSnapshot]);
+
+  const endPress = useCallback(() => {
+    if (pressStartedAt.current === null) return null;
+
+    const timestamp = performance.now();
+    pressStartedAt.current = null;
+    const event = sessionRef.current.endPress({ timestamp });
+    syncSnapshot();
+    return event;
+  }, [syncSnapshot]);
 
   useEffect(() => {
     function handleKeyDown(event) {
       if (event.code !== "Space" || event.repeat) return;
       event.preventDefault();
-      pressStartTime.current = Date.now();
-      setIsPressed(true);
+      startPress(MORSE_INPUT_DEVICES.KEYBOARD);
     }
 
     function handleKeyUp(event) {
       if (event.code !== "Space") return;
       event.preventDefault();
-
-      if (pressStartTime.current === null) return;
-
-      const pressDuration = Date.now() - pressStartTime.current;
-      const symbol = pressDuration < DOT_THRESHOLD_MS ? "." : "-";
-
-      setInputSequence((previous) => {
-        if (previous.length >= MAX_SEQUENCE_LENGTH) return previous;
-        return previous + symbol;
-      });
-
-      pressStartTime.current = null;
-      setIsPressed(false);
+      endPress();
     }
 
     window.addEventListener("keydown", handleKeyDown);
@@ -41,13 +69,48 @@ export default function useMorseInput() {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [startPress, endPress]);
+
+  const handlePointerDown = useCallback((event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    event.preventDefault();
+    event.currentTarget.setPointerCapture?.(event.pointerId);
+    startPress(
+      event.pointerType === "touch"
+        ? MORSE_INPUT_DEVICES.TOUCH
+        : MORSE_INPUT_DEVICES.MOUSE
+    );
+  }, [startPress]);
+
+  const handlePointerUp = useCallback((event) => {
+    event.preventDefault();
+    endPress();
+  }, [endPress]);
+
+  const handlePointerCancel = useCallback((event) => {
+    event.preventDefault();
+    endPress();
+  }, [endPress]);
 
   const resetInput = useCallback(() => {
-    setInputSequence("");
-    setIsPressed(false);
-    pressStartTime.current = null;
-  }, []);
+    sessionRef.current.reset();
+    pressStartedAt.current = null;
+    syncSnapshot();
+  }, [syncSnapshot]);
 
-  return { inputSequence, isPressed, resetInput };
+  return {
+    inputSequence: snapshot.sequence,
+    isPressed: snapshot.isPressed,
+    activeDevice: snapshot.activeDevice,
+    events: snapshot.events,
+    timing: snapshot.timing,
+    calibration: snapshot.calibration,
+    startPress,
+    endPress,
+    handlePointerDown,
+    handlePointerUp,
+    handlePointerCancel,
+    resetInput,
+    normalizePressDuration
+  };
 }
