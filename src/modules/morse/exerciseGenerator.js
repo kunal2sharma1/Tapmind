@@ -3,6 +3,7 @@ import {
   createLearningExercise,
   MORSE_LEARNING_MODES,
 } from "./learningModes";
+import { rankAdaptiveCandidates } from "./adaptive";
 
 export const MORSE_DIFFICULTIES = Object.freeze({
   INTRODUCTORY: "introductory",
@@ -100,16 +101,26 @@ export function getCharacterDifficulty(character) {
 }
 
 export function rankCharacters(candidates, context = {}) {
-  return [...candidates]
-    .map((character) => ({
-      character,
-      difficulty: getCharacterDifficulty(character),
-      weight: candidateWeight(character, context),
-    }))
-    .sort((a, b) => {
-      if (b.weight !== a.weight) return b.weight - a.weight;
-      return a.character.id.localeCompare(b.character.id);
-    });
+  const ranked = context.characterMastery
+    ? rankAdaptiveCandidates(candidates, {
+        characterMastery: context.characterMastery,
+        weakestSkills: context.weakestSkills,
+        now: context.now,
+      }).map((entry) => ({
+        character: entry.candidate,
+        difficulty: getCharacterDifficulty(entry.candidate),
+        weight: entry.score,
+      }))
+    : [...candidates].map((character) => ({
+        character,
+        difficulty: getCharacterDifficulty(character),
+        weight: candidateWeight(character, context),
+      }));
+
+  return ranked.sort((a, b) => {
+    if (b.weight !== a.weight) return b.weight - a.weight;
+    return a.character.id.localeCompare(b.character.id);
+  });
 }
 
 export function selectCandidates({
@@ -192,12 +203,13 @@ export function generateExercise({
       },
     }),
     generator: Object.freeze({
-      version: 1,
+      version: 2,
       category,
       selectedDifficulty: getCharacterDifficulty(selected),
       candidatesConsidered: available.length,
       distractorCount: distractors.length,
       seed,
+      adaptive: Boolean(context.characterMastery),
     }),
     choices: Object.freeze([selected, ...distractors]),
   });
@@ -242,7 +254,7 @@ export function generateSession({
         target,
         context,
         seed: seed + index,
-        source: "session-generator",
+        source: context.characterMastery ? "adaptive-session-generator" : "session-generator",
       });
     })
   );
