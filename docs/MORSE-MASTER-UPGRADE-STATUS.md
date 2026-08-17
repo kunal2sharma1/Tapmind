@@ -12,13 +12,32 @@ Automatic Vercel deployment is disabled for this upgrade branch. `main` remains 
 
 ## Current phase
 
-**Phase 6 — Exercise Generation Engine — COMPLETE**
+**Phase 7 — Mastery Engine — COMPLETE**
 
-**Next phase:** Phase 7 — Mastery Engine.
+**Next phase:** Phase 8 — Adaptive Learning.
 
-Phases 2, 3, 4, 5 and 6 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
+Phases 2, 3, 4, 5, 6 and 7 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
 
-## Phase 2 — Curriculum Architecture — COMPLETE
+## Phase 7 — Mastery Engine — COMPLETE
+
+- [x] Added multi-dimensional mastery for recognition, recall, audio recognition, audio recall, sending, timing, speed, retention and confidence.
+- [x] Added explicit mastery states: new, introduced, learning, developing, strong, mastered, at-risk and relearning.
+- [x] Added mastery event model independent of UI components.
+- [x] Added gradual score updates rather than binary completion-to-mastery jumps.
+- [x] Added stronger penalties for repeated incorrect responses.
+- [x] Added timing-quality and response-time inputs when available.
+- [x] Added retention and confidence inputs for future spaced/adaptive systems.
+- [x] Added overall weighted mastery calculation.
+- [x] Added weakest-skill extraction for future adaptive exercise selection.
+- [x] Added persistent mastery records in `tapmind.progress.v3`.
+- [x] Preserved existing v1/v2 character accuracy data during migration.
+- [x] Added learner-facing character mastery summary.
+- [x] Added `validate:mastery` validation command.
+- [x] Documented the Phase-7 mastery contract and future adaptive-learning boundary.
+
+## Earlier completed phases
+
+### Phase 2 — Curriculum Architecture — COMPLETE
 
 - [x] Expanded the original 10-level prototype into a staged 64-lesson Morse path.
 - [x] Added foundation, letters, numbers, punctuation, prosigns, review, and mastery stages.
@@ -32,7 +51,7 @@ Phases 2, 3, 4, 5 and 6 are complete development phases. Browser/device QA, comp
 - [x] Preserved existing character statistics where possible during migration.
 - [x] Added ambiguous Morse-pattern support for catalog lookups.
 
-## Phase 3 — Audio + Timing Engine — COMPLETE
+### Phase 3 — Audio + Timing Engine — COMPLETE
 
 - [x] Added centralized Morse timing constants and calculations.
 - [x] Added standard WPM support.
@@ -51,9 +70,8 @@ Phases 2, 3, 4, 5 and 6 are complete development phases. Browser/device QA, comp
 - [x] Added WPM selection and standard/Farnsworth selection to the UI.
 - [x] Added tone-frequency control to the UI.
 - [x] Integrated audio controls into the learner shell.
-- [x] Verified an earlier branch commit built successfully on Vercel before automatic branch deployments were disabled.
 
-## Phase 4 — Input Engine — COMPLETE
+### Phase 4 — Input Engine — COMPLETE
 
 - [x] Replaced the fixed 200 ms prototype threshold with a timing-model-derived classification boundary.
 - [x] Added keyboard input adapter.
@@ -70,9 +88,8 @@ Phases 2, 3, 4, 5 and 6 are complete development phases. Browser/device QA, comp
 - [x] Added custom dit/dah calibration controls.
 - [x] Added a recalculated classification boundary between dit and dah targets.
 - [x] Kept calibration diagnostics separate from progression/mastery so Phase 4 does not prematurely bias learning outcomes.
-- [x] Documented the normalized input contract and future hardware adapter boundary.
 
-## Phase 5 — Learning Modes — COMPLETE
+### Phase 5 — Learning Modes — COMPLETE
 
 - [x] Defined canonical learning modes: Learn, Recognition, Recall, Audio Recognition, Audio Recall, Sending, Mixed Practice.
 - [x] Defined skill mappings for every learning mode.
@@ -89,10 +106,8 @@ Phases 2, 3, 4, 5 and 6 are complete development phases. Browser/device QA, comp
 - [x] Added sending mode with raw timing feedback preserved.
 - [x] Added mixed practice that rotates across previously built skill modes.
 - [x] Added five-exercise session lifecycle with score summary and restart path.
-- [x] Kept timing-quality data diagnostic-only; formal mastery weighting remains later.
-- [x] Added mode-specific feedback without coupling it to the future mastery engine.
 
-## Phase 6 — Exercise Generation Engine — COMPLETE
+### Phase 6 — Exercise Generation Engine — COMPLETE
 
 - [x] Added reusable candidate-pool selection for letters, numbers, punctuation and prosigns.
 - [x] Added baseline content-difficulty classification: introductory, standard, challenging, advanced.
@@ -104,14 +119,12 @@ Phases 2, 3, 4, 5 and 6 are complete development phases. Browser/device QA, comp
 - [x] Added generated-exercise metadata for source, seed, category and difficulty.
 - [x] Added deterministic mixed-session generation across recognition, recall, audio recognition, audio recall and sending.
 - [x] Added `validate:exercises` validation command.
-- [x] Integrated generated exercises into the learner session while preserving the current curriculum target.
-- [x] Documented the generator contract and future mastery integration boundary.
+- [x] Integrated generated exercises into the learner session.
 
 ## Not yet released
 
-- [ ] Phase 7 mastery engine
+- [ ] Phase 8 adaptive learning
 - [ ] Spaced repetition scheduler
-- [ ] Adaptive exercise selection using formal mastery
 - [ ] Daily review system
 - [ ] Word curriculum
 - [ ] Sentence curriculum
