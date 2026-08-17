@@ -12,11 +12,25 @@ Automatic Vercel deployment is disabled for this upgrade branch. `main` remains 
 
 ## Current phase
 
-**Phase 7 — Mastery Engine — COMPLETE**
+**Phase 8 — Adaptive Learning — COMPLETE**
 
-**Next phase:** Phase 8 — Adaptive Learning.
+**Next phase:** Phase 9 — Spaced Repetition Scheduler.
 
-Phases 2, 3, 4, 5, 6 and 7 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
+Phases 2 through 8 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
+
+## Phase 8 — Adaptive Learning — COMPLETE
+
+- [x] Added mastery-aware candidate ranking without replacing the canonical exercise generator.
+- [x] Added weak/underexposed/recent-practice weighting.
+- [x] Added explicit adaptive session roles: weak, reinforce, retention and new/underexposed.
+- [x] Added mastery-driven mode selection from weakest skills.
+- [x] Added deterministic adaptive session planning with seeded selection.
+- [x] Added adaptive ranking validation command.
+- [x] Integrated mastery context from `useProgress` into the learner session.
+- [x] Limited adaptive candidate eligibility to characters already introduced by the curriculum boundary.
+- [x] Integrated adaptive candidate ranking into Phase-6 exercise generation.
+- [x] Preserved deterministic generation and explicit exercise metadata.
+- [x] Documented the adaptive-learning safety rules and Phase-9 scheduler boundary.
 
 ## Phase 7 — Mastery Engine — COMPLETE
 
@@ -28,12 +42,11 @@ Phases 2, 3, 4, 5, 6 and 7 are complete development phases. Browser/device QA, c
 - [x] Added timing-quality and response-time inputs when available.
 - [x] Added retention and confidence inputs for future spaced/adaptive systems.
 - [x] Added overall weighted mastery calculation.
-- [x] Added weakest-skill extraction for future adaptive exercise selection.
+- [x] Added weakest-skill extraction for adaptive exercise selection.
 - [x] Added persistent mastery records in `tapmind.progress.v3`.
 - [x] Preserved existing v1/v2 character accuracy data during migration.
 - [x] Added learner-facing character mastery summary.
 - [x] Added `validate:mastery` validation command.
-- [x] Documented the Phase-7 mastery contract and future adaptive-learning boundary.
 
 ## Earlier completed phases
 
@@ -123,8 +136,7 @@ Phases 2, 3, 4, 5, 6 and 7 are complete development phases. Browser/device QA, c
 
 ## Not yet released
 
-- [ ] Phase 8 adaptive learning
-- [ ] Spaced repetition scheduler
+- [ ] Phase 9 spaced repetition scheduler
 - [ ] Daily review system
 - [ ] Word curriculum
 - [ ] Sentence curriculum
