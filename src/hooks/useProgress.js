@@ -1,10 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
-import { applyMasteryEvent, buildMasteryEvent, createEmptyMastery, getMasteryState, calculateOverallMastery, normalizeMastery } from "../modules/morse/mastery";
+import {
+  applyMasteryEvent,
+  buildMasteryEvent,
+  createEmptyMastery,
+  getMasteryState,
+  calculateOverallMastery,
+  normalizeMastery
+} from "../modules/morse/mastery";
+import { createInitialReviewState, normalizeReviewState, scheduleReview } from "../modules/morse/reviewScheduler";
 
-const STORAGE_KEY = "tapmind.progress.v3";
-const LEGACY_STORAGE_KEY = "tapmind.progress.v2";
-const OLDER_STORAGE_KEY = "tapmind.progress.v1";
-const STORAGE_VERSION = 3;
+const STORAGE_KEY = "tapmind.progress.v4";
+const LEGACY_STORAGE_KEY = "tapmind.progress.v3";
+const OLDER_STORAGE_KEY = "tapmind.progress.v2";
+const OLDEST_STORAGE_KEY = "tapmind.progress.v1";
+const STORAGE_VERSION = 4;
 
 const LEGACY_LEVEL_TO_NEW_LEVEL = Object.freeze({
   1: 1,
@@ -24,6 +33,7 @@ const EMPTY_PROGRESS = {
   completedLevels: [],
   characterStats: {},
   mastery: {},
+  reviews: {},
   migration: {
     migratedFromVersion: null,
     migratedAt: null,
@@ -61,6 +71,13 @@ function normalizeMasteryMap(masteries) {
   );
 }
 
+function normalizeReviewMap(reviews) {
+  if (!reviews || typeof reviews !== "object") return {};
+  return Object.fromEntries(
+    Object.entries(reviews).map(([symbol, value]) => [symbol, normalizeReviewState(value)])
+  );
+}
+
 function normalizeProgress(parsed) {
   return {
     ...EMPTY_PROGRESS,
@@ -71,15 +88,17 @@ function normalizeProgress(parsed) {
       : [],
     characterStats: normalizeCharacterStats(parsed.characterStats),
     mastery: normalizeMasteryMap(parsed.mastery),
+    reviews: normalizeReviewMap(parsed.reviews),
   };
 }
 
-function migrateV2Progress(parsed) {
+function migrateProgress(parsed, fromVersion) {
   return normalizeProgress({
     ...parsed,
-    mastery: {},
+    mastery: parsed.mastery ?? {},
+    reviews: {},
     migration: {
-      migratedFromVersion: 2,
+      migratedFromVersion: fromVersion,
       migratedAt: new Date().toISOString(),
     },
   });
@@ -97,6 +116,7 @@ function migrateV1Progress(parsed) {
     currentLevel: mappedCurrentLevel,
     completedLevels: migratedCompletedLevels,
     mastery: {},
+    reviews: {},
     migration: {
       migratedFromVersion: 1,
       migratedAt: new Date().toISOString(),
@@ -112,13 +132,19 @@ function loadProgress() {
       if (parsed?.version === STORAGE_VERSION) return normalizeProgress(parsed);
     }
 
-    const v2 = localStorage.getItem(LEGACY_STORAGE_KEY);
-    if (v2) {
-      const parsed = JSON.parse(v2);
-      if (parsed?.version === 2) return migrateV2Progress(parsed);
+    const v3 = localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (v3) {
+      const parsed = JSON.parse(v3);
+      if (parsed?.version === 3) return migrateProgress(parsed, 3);
     }
 
-    const v1 = localStorage.getItem(OLDER_STORAGE_KEY);
+    const v2 = localStorage.getItem(OLDER_STORAGE_KEY);
+    if (v2) {
+      const parsed = JSON.parse(v2);
+      if (parsed?.version === 2) return migrateProgress(parsed, 2);
+    }
+
+    const v1 = localStorage.getItem(OLDEST_STORAGE_KEY);
     if (v1) {
       const parsed = JSON.parse(v1);
       if (parsed?.version === 1) return migrateV1Progress(parsed);
@@ -154,6 +180,7 @@ export default function useProgress() {
 
       const attempts = existing.attempts + 1;
       const correctCount = existing.correct + (correct ? 1 : 0);
+      const now = new Date();
 
       const nextCharacterStats = {
         ...previous.characterStats,
@@ -161,7 +188,7 @@ export default function useProgress() {
           ...existing,
           attempts,
           correct: correctCount,
-          lastPracticed: new Date().toISOString(),
+          lastPracticed: now.toISOString(),
           accuracy: Math.round((correctCount / attempts) * 100),
         },
       };
@@ -186,12 +213,25 @@ export default function useProgress() {
         state: getMasteryState(nextMastery, { previouslyPracticed: true }),
       };
 
+      const previousReview = previous.reviews[symbol] || createInitialReviewState(now);
+      const nextReview = scheduleReview(previousReview, {
+        correct,
+        confidence: responseMeta.confidence ?? storedMastery.confidence,
+        timingQuality: responseMeta.timingQuality,
+        responseMs: responseMeta.responseMs,
+        now,
+      });
+
       return {
         ...previous,
         characterStats: nextCharacterStats,
         mastery: {
           ...previous.mastery,
           [symbol]: storedMastery,
+        },
+        reviews: {
+          ...previous.reviews,
+          [symbol]: nextReview,
         },
       };
     });
@@ -239,7 +279,12 @@ export default function useProgress() {
 
   const getMastery = useCallback(
     (symbol) => progress.mastery[symbol] || createEmptyMastery(),
-    [progress.mastery]
+    [progress.mastery],
+  );
+
+  const getReview = useCallback(
+    (symbol) => progress.reviews[symbol] || createInitialReviewState(),
+    [progress.reviews],
   );
 
   return {
@@ -250,5 +295,6 @@ export default function useProgress() {
     isLevelUnlocked,
     getCharacterStats,
     getMastery,
+    getReview,
   };
 }
