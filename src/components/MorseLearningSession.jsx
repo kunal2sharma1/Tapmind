@@ -2,13 +2,11 @@ import { useMemo, useState } from "react";
 import useMorseAudio from "../hooks/useMorseAudio";
 import useMorseInput from "../hooks/useMorseInput";
 import {
+  createLearningExercise,
   MORSE_LEARNING_MODES,
   scoreLearningResponse,
 } from "../modules/morse/learningModes";
-import {
-  generateExercise,
-  MORSE_DIFFICULTIES,
-} from "../modules/morse/exerciseGenerator";
+import { generateExercise } from "../modules/morse/exerciseGenerator";
 import "./MorseLearningSession.css";
 
 const SESSION_LENGTH = 5;
@@ -20,21 +18,17 @@ const MIXED_MODES = [
   MORSE_LEARNING_MODES.SENDING,
 ];
 
+function buildChoices(exercise) {
+  return exercise.choices || [];
+}
+
 export default function MorseLearningSession({
   mode,
   currentCharacter,
   currentLevel,
   recordAttempt,
 }) {
-  const {
-    inputSequence,
-    isPressed,
-    events,
-    handlePointerDown,
-    handlePointerUp,
-    handlePointerCancel,
-    resetInput,
-  } = useMorseInput();
+  const { inputSequence, isPressed, events, handlePointerDown, handlePointerUp, handlePointerCancel, resetInput } = useMorseInput();
   const { isPlaying, play, stop } = useMorseAudio();
   const [step, setStep] = useState(0);
   const [score, setScore] = useState(0);
@@ -44,32 +38,41 @@ export default function MorseLearningSession({
   const [completed, setCompleted] = useState(false);
   const [reveal, setReveal] = useState(false);
 
-  const baseTarget = useMemo(() => ({
+  const target = useMemo(() => ({
     id: currentCharacter?.id ?? `legacy-${currentCharacter?.letter ?? "unknown"}`,
     symbol: currentCharacter?.letter ?? currentCharacter?.symbol ?? "",
     morse: currentCharacter?.morse ?? "",
     category: currentCharacter?.category ?? "letter",
   }), [currentCharacter]);
 
-  const exerciseMode = useMemo(() => (
-    mode === MORSE_LEARNING_MODES.MIXED
-      ? MIXED_MODES[step % MIXED_MODES.length]
-      : mode
-  ), [mode, step]);
+  const exerciseMode = useMemo(() => {
+    if (mode !== MORSE_LEARNING_MODES.MIXED) return mode;
+    return MIXED_MODES[step % MIXED_MODES.length];
+  }, [mode, step]);
 
-  const exercise = useMemo(() => generateExercise({
-    mode: exerciseMode,
-    category: baseTarget.category === "number" ? "numbers" : baseTarget.category === "punctuation" ? "punctuation" : baseTarget.category === "prosign" ? "prosigns" : "letters",
-    difficulty: MORSE_DIFFICULTIES.STANDARD,
-    target: baseTarget,
-    context: {},
-    seed: ((currentLevel?.level ?? 1) * 101) + step,
-    distractorCount: 3,
-    source: "phase-6-session",
-  }), [exerciseMode, baseTarget, currentLevel?.level, step]);
+  const exercise = useMemo(() => {
+    try {
+      return generateExercise({
+        mode: exerciseMode,
+        target,
+        pool: [target],
+        options: {
+          source: "phase-6-session",
+          difficulty: "current-level",
+          seed: step + target.symbol.charCodeAt(0),
+          choiceCount: 4,
+        },
+      });
+    } catch {
+      return createLearningExercise({
+        mode: exerciseMode,
+        character: target,
+        options: { source: "phase-5-session", difficulty: "current-level" },
+      });
+    }
+  }, [exerciseMode, target, step]);
 
-  const target = exercise.target;
-  const choices = exercise.choices;
+  const choices = useMemo(() => buildChoices(exercise), [exercise]);
   const latestEvent = events.at(-1);
 
   function begin() {
@@ -89,7 +92,12 @@ export default function MorseLearningSession({
     setFeedback(result.correct ? "correct" : "wrong");
     setReveal(true);
     if (result.correct) setScore((value) => value + 1);
-    recordAttempt(currentLevel, result.correct, exercise);
+
+    recordAttempt(currentLevel, result.correct, exercise, {
+      responseMs: latestEvent?.durationMs ?? null,
+      timingQuality: latestEvent?.timingQuality?.score ?? null,
+      confidence: result.correct ? 90 : 35,
+    });
   }
 
   function submitChoice(symbol) {
@@ -145,8 +153,8 @@ export default function MorseLearningSession({
         <p className="card-label">Training session</p>
         <h3>Build this skill through active recall</h3>
         <p className="morse-session-intro">
-          This mode gives you {SESSION_LENGTH} generated exercises around the current curriculum target.
-          Difficulty and selection will become learner-adaptive in the mastery phase.
+          This mode gives you {SESSION_LENGTH} focused exercises on the current character.
+          Timing data is recorded, while mastery tracks each skill separately.
         </p>
         <button type="button" className="ctrl-btn btn-next" onClick={begin}>
           Start {mode === MORSE_LEARNING_MODES.MIXED ? "Mixed" : "Session"} →
@@ -161,7 +169,7 @@ export default function MorseLearningSession({
         <p className="card-label">Session complete</p>
         <div className="morse-session-score">{score} / {SESSION_LENGTH}</div>
         <p className="morse-session-feedback">
-          {score === SESSION_LENGTH ? "Excellent consistency." : "Good practice. Future mastery scoring will make review more precise."}
+          {score === SESSION_LENGTH ? "Excellent consistency." : "Good practice. Your mastery profile has been updated."}
         </p>
         <button type="button" className="ctrl-btn btn-next" onClick={restart}>
           Choose Another Session →
