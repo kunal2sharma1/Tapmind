@@ -36,7 +36,6 @@
   letter-spacing: -0.5px;
 }
 
-/* ── Cards ────────────────────────────────────────────── */
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -54,7 +53,6 @@
   margin-bottom: 16px;
 }
 
-/* ── Instruction Card ─────────────────────────────────── */
 .instruction-card {
   display: flex;
   flex-direction: column;
@@ -92,7 +90,6 @@
   font-weight: 400;
 }
 
-/* ── Input Card ───────────────────────────────────────── */
 .input-card {
   min-height: 120px;
 }
@@ -131,7 +128,6 @@
   color: var(--text-muted);
 }
 
-/* ── Controls Section ─────────────────────────────────── */
 .controls-section {
   display: flex;
   gap: 12px;
@@ -196,7 +192,6 @@
   box-shadow: 0 0 12px rgba(96, 165, 250, 0.15);
 }
 
-/* ── Progress Strip ───────────────────────────────────── */
 .progress-strip {
   display: flex;
   align-items: center;
@@ -240,16 +235,12 @@
   flex-shrink: 0;
 }
 
-/* ── Phase 2: Morse Input ───────────────────────────────────── */
-
-/* Active card — subtle green glow while key is held */
 .card-active {
   border-color: rgba(74, 222, 128, 0.35);
   box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.1), var(--shadow-card);
   transition: border-color 0.1s, box-shadow 0.1s;
 }
 
-/* Symbol row — dots and dashes displayed inline */
 .symbol-row {
   display: flex;
   align-items: center;
@@ -267,7 +258,6 @@
 .sym-dot  { color: var(--accent); }
 .sym-dash { color: var(--blue);   }
 
-/* Pulsing cursor while spacebar is held down */
 .press-cursor {
   display: inline-block;
   width: 3px;
@@ -279,11 +269,10 @@
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1;   }
-  50%       { opacity: 0.2; }
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.2; }
 }
 
-/* Raw sequence string shown below the symbols */
 .decoded-value {
   font-family: var(--font-mono);
   font-size: 15px;
@@ -291,9 +280,6 @@
   letter-spacing: 2px;
 }
 
-/* ── Phase 5: Gamification ──────────────────────────────────── */
-
-/* Score + streak strip in header */
 .score-strip {
   margin-left: auto;
   display: flex;
@@ -312,7 +298,6 @@
   color: var(--amber);
 }
 
-/* Feedback line below input card */
 .feedback-line {
   font-family: var(--font-mono);
   font-size: 13px;
@@ -320,10 +305,66 @@
   padding: 6px 0 0 2px;
 }
 
-.feedback-correct {
-  color: var(--accent);
+.feedback-correct { color: var(--accent); }
+.feedback-wrong { color: #f87171; }
+
+/* ── Phase 4: Multi-device Morse input ───────────────────── */
+.morse-input-pad {
+  width: 100%;
+  min-height: 92px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  cursor: pointer;
+  user-select: none;
+  touch-action: none;
+  -webkit-user-select: none;
+  transition: border-color 0.1s, background 0.1s, transform 0.1s, box-shadow 0.1s;
 }
 
-.feedback-wrong {
-  color: #f87171;
+.morse-input-pad span {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.morse-input-pad small {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.morse-input-pad:hover {
+  border-color: rgba(74, 222, 128, 0.35);
+}
+
+.morse-input-pad.is-pressed {
+  background: var(--accent-glow);
+  border-color: var(--accent);
+  box-shadow: 0 0 18px var(--accent-glow);
+  transform: translateY(1px);
+}
+
+.morse-input-meta,
+.morse-input-calibration {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.morse-input-meta span:first-child {
+  color: var(--text-primary);
+  font-weight: 800;
+}
+
+.morse-input-calibration {
+  opacity: 0.75;
 }
