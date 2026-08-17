@@ -1,5 +1,5 @@
-import { getReviewQueue } from "./reviewScheduler";
-import { generateSession } from "./exerciseGenerator";
+import { buildReviewQueue } from "./reviewScheduler";
+import { generateExercise } from "./exerciseGenerator";
 import { getWeakestSkills } from "./mastery";
 
 export const DAILY_SESSION_TYPES = Object.freeze({
@@ -12,10 +12,7 @@ export const DAILY_SESSION_TYPES = Object.freeze({
 const DEFAULTS = Object.freeze({
   durationMinutes: 10,
   minimumExercises: 5,
-  maximumExercises: 20,
-  reviewRatio: 0.5,
-  adaptiveRatio: 0.3,
-  newMaterialRatio: 0.2
+  maximumExercises: 20
 });
 
 function clamp(value, min, max) {
@@ -51,25 +48,41 @@ function normalizeOptions(options = {}) {
   };
 }
 
+function aggregateWeakestSkills(masteries) {
+  const aggregate = new Map();
+
+  for (const mastery of Object.values(masteries ?? {})) {
+    for (const item of getWeakestSkills(mastery, 9)) {
+      const existing = aggregate.get(item.skill);
+      aggregate.set(item.skill, {
+        skill: item.skill,
+        score: existing ? existing.score + item.score : item.score,
+        samples: existing ? existing.samples + 1 : 1,
+      });
+    }
+  }
+
+  return [...aggregate.values()]
+    .map((item) => ({ skill: item.skill, score: Math.round(item.score / item.samples) }))
+    .sort((a, b) => a.score - b.score)
+    .slice(0, 3);
+}
+
 export function calculateDailyMix({ dueCount = 0, mastery = {}, introducedCharacterIds = [], options = {} } = {}) {
   const normalized = normalizeOptions(options);
-  const weakest = getWeakestSkillsForMap(mastery);
-  const dueRatio = dueCount > 0 ? Math.min(0.7, DEFAULTS.reviewRatio + Math.min(dueCount / 100, 0.2)) : 0;
+  const weakest = aggregateWeakestSkills(mastery);
+  const dueRatio = dueCount > 0
+    ? Math.min(0.7, 0.5 + Math.min(dueCount / Math.max(1, normalized.targetExercises * 4), 0.2))
+    : 0;
   const remaining = 1 - dueRatio;
-  const adaptiveRatio = remaining * (weakest.length ? 0.65 : 0.45);
+  const adaptiveRatio = remaining * (weakest.length ? 0.65 : 0.4);
   const newMaterialRatio = Math.max(0, 1 - dueRatio - adaptiveRatio);
 
   const reviewCount = dueCount > 0
     ? Math.min(dueCount, Math.max(1, Math.round(normalized.targetExercises * dueRatio)))
     : 0;
-  const adaptiveCount = Math.max(
-    weakest.length ? 1 : 0,
-    Math.round(normalized.targetExercises * adaptiveRatio)
-  );
-  const newCount = Math.max(
-    0,
-    normalized.targetExercises - reviewCount - adaptiveCount
-  );
+  const adaptiveCount = weakest.length ? Math.max(1, Math.round(normalized.targetExercises * adaptiveRatio)) : 0;
+  const newCount = Math.max(0, normalized.targetExercises - reviewCount - adaptiveCount);
 
   return Object.freeze({
     targetExercises: normalized.targetExercises,
@@ -79,29 +92,35 @@ export function calculateDailyMix({ dueCount = 0, mastery = {}, introducedCharac
     dueCount,
     weakestSkills: weakest,
     introducedCharacterIds: [...introducedCharacterIds],
+    ratios: Object.freeze({ dueRatio, adaptiveRatio, newMaterialRatio })
   });
 }
 
-function getWeakestSkillsForMap(masteries) {
-  const merged = Object.values(masteries ?? {}).reduce(
-    (accumulator, mastery) => {
-      for (const [skill, score] of Object.entries(getWeakestSkills(mastery, 9))) {
-        const existing = accumulator.find((item) => item.skill === skill);
-        if (existing) existing.score += score;
-        else accumulator.push({ skill, score });
-      }
-      return accumulator;
-    },
-    []
-  );
-
-  return merged
-    .sort((a, b) => a.score - b.score)
-    .slice(0, 3);
+function buildReviewItems(reviewMap, characterLookup) {
+  return Object.entries(reviewMap ?? {}).map(([characterId, review]) => ({
+    characterId,
+    review,
+    mastery: characterLookup?.[characterId] ?? null,
+  }));
 }
 
-function buildReviewCandidates(reviewQueue, limit) {
-  return reviewQueue.slice(0, limit).map((item) => item.characterId).filter(Boolean);
+function generateForCharacters(characters, mode, context, count, seed, source) {
+  return characters.slice(0, count).map((character, index) =>
+    generateExercise({
+      mode,
+      target: character,
+      category: character.category === "number"
+        ? "numbers"
+        : character.category === "punctuation"
+          ? "punctuation"
+          : character.category === "prosign"
+            ? "prosigns"
+            : "letters",
+      context,
+      seed: seed + index,
+      source,
+    })
+  );
 }
 
 export function buildDailySession({
@@ -114,74 +133,70 @@ export function buildDailySession({
   seed = 0,
 } = {}) {
   const normalized = normalizeOptions(options);
-  const reviewQueue = getReviewQueue(reviewMap, now);
-  const introduced = introducedCharacters.length ? introducedCharacters : [];
+  const reviewItems = buildReviewQueue(
+    buildReviewItems(reviewMap, characterMastery),
+    { now: new Date(now), limit: normalized.maximumExercises }
+  );
+  const introduced = introducedCharacters.filter(Boolean);
+  const introducedById = new Map(introduced.map((character) => [character.id, character]));
   const mix = calculateDailyMix({
-    dueCount: reviewQueue.length,
+    dueCount: reviewItems.length,
     mastery,
     introducedCharacterIds: introduced.map((character) => character.id),
     options: normalized,
   });
 
-  const reviewIds = buildReviewCandidates(reviewQueue, mix.reviewCount);
-  const reviewCharacters = introduced.filter((character) => reviewIds.includes(character.id));
-  const remainingCharacters = introduced.filter((character) => !reviewIds.includes(character.id));
+  const reviewCharacters = reviewItems
+    .map((item) => introducedById.get(item.characterId))
+    .filter(Boolean);
+  const reviewIds = new Set(reviewCharacters.map((character) => character.id));
+  const remainingCharacters = introduced.filter((character) => !reviewIds.has(character.id));
 
   const context = {
     characterMastery,
     mastery,
-    dueCharacterIds: reviewIds,
+    dueCharacterIds: reviewCharacters.map((character) => character.id),
     introducedCharacterIds: introduced.map((character) => character.id),
     now,
   };
 
-  const exercises = [];
-
-  if (reviewCharacters.length) {
-    exercises.push(...generateSession({
-      mode: "mixed",
-      count: Math.min(reviewCharacters.length, mix.reviewCount),
-      candidates: reviewCharacters,
+  const exercises = [
+    ...generateForCharacters(
+      reviewCharacters,
+      "mixed",
       context,
-      seed: seed + 1000,
-      source: "daily-review",
-    }));
-  }
-
-  if (mix.adaptiveCount > 0 && remainingCharacters.length) {
-    exercises.push(...generateSession({
-      mode: "mixed",
-      count: Math.min(mix.adaptiveCount, remainingCharacters.length),
-      candidates: remainingCharacters,
+      mix.reviewCount,
+      seed + 1000,
+      "daily-review"
+    ),
+    ...generateForCharacters(
+      remainingCharacters,
+      "mixed",
       context,
-      seed: seed + 2000,
-      source: "daily-adaptive",
-    }));
-  }
-
-  if (mix.newCount > 0 && remainingCharacters.length) {
-    exercises.push(...generateSession({
-      mode: "learn",
-      count: Math.min(mix.newCount, remainingCharacters.length),
-      candidates: remainingCharacters,
-      context: { ...context, characterMastery: null },
-      seed: seed + 3000,
-      source: "daily-new-material",
-    }));
-  }
-
-  const orderedExercises = exercises.slice(0, normalized.maximumExercises);
+      mix.adaptiveCount,
+      seed + 2000,
+      "daily-adaptive"
+    ),
+    ...generateForCharacters(
+      remainingCharacters.slice(mix.adaptiveCount),
+      "learn",
+      { ...context, characterMastery: null },
+      mix.newCount,
+      seed + 3000,
+      "daily-new-material"
+    )
+  ].slice(0, normalized.maximumExercises);
 
   return Object.freeze({
     id: `daily:${new Date(now).toISOString().slice(0, 10)}`,
     createdAt: new Date(now).toISOString(),
     durationMinutes: normalized.durationMinutes,
     targetExercises: normalized.targetExercises,
-    dueCount: reviewQueue.length,
+    dueCount: reviewItems.length,
     mix,
-    exercises: Object.freeze(orderedExercises),
+    exercises: Object.freeze(exercises),
     weakestSkills: mix.weakestSkills,
-    hasDueReviews: reviewQueue.length > 0,
+    hasDueReviews: reviewItems.length > 0,
     completed: false,
   });
 }
