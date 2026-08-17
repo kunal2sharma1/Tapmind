@@ -5,6 +5,7 @@ import MainContent from "./components/MainContent";
 import MorseAudioControls from "./components/MorseAudioControls";
 import MorseLearningModeSelector from "./components/MorseLearningModeSelector";
 import MorseLearningSession from "./components/MorseLearningSession";
+import MorseMasteryCard from "./components/MorseMasteryCard";
 import levelsData from "./modules/morse/levels.json";
 import useProgress from "./hooks/useProgress";
 import { MORSE_LEARNING_MODES } from "./modules/morse/learningModes";
@@ -13,7 +14,7 @@ import "./styles/global.css";
 import "./styles/learning-column.css";
 
 export default function App() {
-  const { progress, recordAttempt, completeLevel, setCurrentLevel, isLevelUnlocked } = useProgress();
+  const { progress, recordAttempt, completeLevel, setCurrentLevel, isLevelUnlocked, getMastery } = useProgress();
   const [activeNav, setActiveNav] = useState("Learning");
   const [selectedLevel, setSelectedLevel] = useState(progress.currentLevel || 1);
   const [learningMode, setLearningMode] = useState(MORSE_LEARNING_MODES.LEARN);
@@ -24,6 +25,7 @@ export default function App() {
   const currentLevel = currentItem.raw;
   const currentLesson = currentItem.lesson;
   const currentCharacter = currentItem.character;
+  const currentMastery = getMastery(currentCharacter?.letter ?? currentCharacter?.symbol ?? "");
 
   function handleLevelSelect(levelNumber) {
     if (!isLevelUnlocked(levelNumber)) return;
@@ -78,6 +80,11 @@ export default function App() {
               label={`Listen to ${currentCharacter.letter}`}
             />
           )}
+
+          <MorseMasteryCard
+            symbol={currentCharacter?.letter ?? currentCharacter?.symbol}
+            mastery={currentMastery}
+          />
         </div>
       </div>
     </div>
