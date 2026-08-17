@@ -12,11 +12,29 @@ Automatic Vercel deployment is disabled for this upgrade branch. `main` remains 
 
 ## Current phase
 
-**Phase 10 — Daily Learning System — COMPLETE**
+**Phase 11 — Word Learning — COMPLETE**
 
-**Next phase:** Phase 11 — Word Learning.
+**Next phase:** Phase 12 — Sentence Learning.
 
-Phases 2 through 10 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
+Phases 2 through 11 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
+
+## Phase 11 — Word Learning — COMPLETE
+
+- [x] Added curated word corpus with foundation, basic, common and radio-oriented stages.
+- [x] Added stable word IDs and explicit difficulty metadata.
+- [x] Added canonical word-to-Morse encoding through the character catalog.
+- [x] Added word target objects with text, Morse, stage and difficulty.
+- [x] Added word corpus validation for duplicate IDs/text and unsupported characters.
+- [x] Added word exercise modes: audio recognition, Morse recognition, word recall, Morse recall and mixed practice.
+- [x] Added difficulty-aware and mastery-aware word selection.
+- [x] Added controlled word distractor generation.
+- [x] Added deterministic seeded word-session generation.
+- [x] Added word exercise scoring.
+- [x] Added learner-facing Words navigation and dedicated word-learning session.
+- [x] Added word-level progress tracking separate from character mastery.
+- [x] Added `tapmind.progress.v5` with persisted `wordMastery` and migrations from earlier progress versions.
+- [x] Added `validate:words` validation command.
+- [x] Added Phase-11 specification documentation.
 
 ## Phase 10 — Daily Learning System — COMPLETE
 
@@ -124,7 +142,6 @@ Phases 2 through 10 are complete development phases. Browser/device QA, comprehe
 
 ## Not yet released
 
-- [ ] Phase 11 word learning
 - [ ] Phase 12 sentence learning
 - [ ] Phase 13 speed engine
 - [ ] Phase 14 reception training
