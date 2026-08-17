@@ -1,6 +1,6 @@
 import "./Navbar.css";
 
-const NAV_ITEMS = ["Learning", "Morse"];
+const NAV_ITEMS = ["Learning", "Morse", "Words"];
 
 export default function Navbar({ activeNav, onNavChange }) {
   return (
@@ -10,10 +10,11 @@ export default function Navbar({ activeNav, onNavChange }) {
           <span className="logo-dot" />
           TapMind
         </div>
-        <nav className="navbar-links">
+        <nav className="navbar-links" aria-label="Primary navigation">
           {NAV_ITEMS.map((item) => (
             <button
               key={item}
+              type="button"
               className={`nav-btn ${activeNav === item ? "active" : ""}`}
               onClick={() => onNavChange(item)}
             >
