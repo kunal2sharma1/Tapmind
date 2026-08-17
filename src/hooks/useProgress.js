@@ -1,34 +1,80 @@
 import { useCallback, useEffect, useState } from "react";
 
-const STORAGE_KEY = "tapmind.progress.v1";
-const STORAGE_VERSION = 1;
+const STORAGE_KEY = "tapmind.progress.v2";
+const LEGACY_STORAGE_KEY = "tapmind.progress.v1";
+const STORAGE_VERSION = 2;
+
+const LEGACY_LEVEL_TO_NEW_LEVEL = Object.freeze({
+  1: 1,
+  2: 27,
+  3: 9,
+  4: 7,
+  5: 14,
+  6: 13,
+  7: 3,
+  8: 5,
+  9: 11,
+});
 
 const EMPTY_PROGRESS = {
   version: STORAGE_VERSION,
   currentLevel: 1,
   completedLevels: [],
   characterStats: {},
+  migration: {
+    migratedFromVersion: null,
+    migratedAt: null,
+  },
 };
+
+function normalizeProgress(parsed) {
+  return {
+    ...EMPTY_PROGRESS,
+    ...parsed,
+    version: STORAGE_VERSION,
+    completedLevels: Array.isArray(parsed.completedLevels)
+      ? [...new Set(parsed.completedLevels.filter(Number.isFinite))].sort((a, b) => a - b)
+      : [],
+    characterStats:
+      parsed.characterStats && typeof parsed.characterStats === "object"
+        ? parsed.characterStats
+        : {},
+  };
+}
+
+function migrateLegacyProgress(parsed) {
+  const migratedCompletedLevels = (parsed.completedLevels ?? [])
+    .map((levelNumber) => LEGACY_LEVEL_TO_NEW_LEVEL[levelNumber])
+    .filter(Number.isFinite);
+
+  const mappedCurrentLevel = LEGACY_LEVEL_TO_NEW_LEVEL[parsed.currentLevel] ?? 1;
+
+  return normalizeProgress({
+    ...parsed,
+    currentLevel: mappedCurrentLevel,
+    completedLevels: migratedCompletedLevels,
+    migration: {
+      migratedFromVersion: 1,
+      migratedAt: new Date().toISOString(),
+    },
+  });
+}
 
 function loadProgress() {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return EMPTY_PROGRESS;
+    const current = localStorage.getItem(STORAGE_KEY);
+    if (current) {
+      const parsed = JSON.parse(current);
+      if (parsed?.version === STORAGE_VERSION) return normalizeProgress(parsed);
+    }
 
-    const parsed = JSON.parse(saved);
-    if (!parsed || parsed.version !== STORAGE_VERSION) return EMPTY_PROGRESS;
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (legacy) {
+      const parsed = JSON.parse(legacy);
+      if (parsed?.version === 1) return migrateLegacyProgress(parsed);
+    }
 
-    return {
-      ...EMPTY_PROGRESS,
-      ...parsed,
-      completedLevels: Array.isArray(parsed.completedLevels)
-        ? parsed.completedLevels
-        : [],
-      characterStats:
-        parsed.characterStats && typeof parsed.characterStats === "object"
-          ? parsed.characterStats
-          : {},
-    };
+    return EMPTY_PROGRESS;
   } catch {
     return EMPTY_PROGRESS;
   }
