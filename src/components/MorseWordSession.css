@@ -1,0 +1,13 @@
+.morse-word-session { display: grid; gap: 16px; }
+.morse-word-intro, .morse-word-feedback, .morse-word-prompt p, .morse-word-visible-prompt p { margin: 0; line-height: 1.6; }
+.morse-word-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.morse-word-score-badge { font-size: 0.82rem; font-weight: 700; white-space: nowrap; }
+.morse-word-score { font-size: 3rem; font-weight: 800; letter-spacing: -0.03em; }
+.morse-word-prompt, .morse-word-visible-prompt { display: grid; gap: 12px; justify-items: center; text-align: center; }
+.word-morse { font-size: clamp(1.25rem, 3vw, 2rem); letter-spacing: 0.08em; overflow-wrap: anywhere; }
+.word-target { font-size: clamp(2rem, 8vw, 4rem); letter-spacing: 0.04em; }
+.morse-word-choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.morse-word-choice { min-height: 56px; border: 1px solid rgba(0,0,0,0.12); border-radius: 12px; background: transparent; font: inherit; font-weight: 700; cursor: pointer; }
+.morse-word-choice:disabled { cursor: default; }
+.morse-word-choice.is-selected { outline: 2px solid currentColor; outline-offset: 2px; }
+@media (max-width: 640px) { .morse-word-header { flex-direction: column; } .morse-word-choice-grid { grid-template-columns: 1fr; } }
