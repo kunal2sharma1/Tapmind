@@ -6,15 +6,17 @@
 
 ## Deployment rule
 
-This branch is one large product upgrade. Do not merge to `main` until the complete release scope is validated. Production deployment should occur from the final merge to `main`, not from intermediate development work.
+This branch is one large product upgrade. Do not merge to `main` until the complete 47-phase release scope is validated. Production deployment should occur from the final merge to `main`, not from intermediate development work.
+
+Automatic Vercel deployment is disabled for this upgrade branch. `main` remains the production branch.
 
 ## Current phase
 
-**Phase 3 — COMPLETE**
+**Phase 4 — Input Engine — COMPLETE**
 
-**Next phase:** Phase 4 — Input Engine
+**Next phase:** Phase 5 — Learning Modes
 
-Phase 2 curriculum architecture and Phase 3 audio/timing implementation are complete as development phases. Browser/device audio quality testing remains part of the final end-to-end QA phase and is intentionally not treated as a reason to block the phase transition.
+Phase 2 curriculum architecture, Phase 3 audio/timing, and Phase 4 input architecture are complete as development phases. Browser/device QA, comprehensive automated testing, and final end-to-end verification remain part of the final release QA scope.
 
 ## Phase 2 — Curriculum Architecture — COMPLETE
 
@@ -49,15 +51,31 @@ Phase 2 curriculum architecture and Phase 3 audio/timing implementation are comp
 - [x] Added WPM selection and standard/Farnsworth selection to the UI.
 - [x] Added tone-frequency control to the UI.
 - [x] Integrated audio controls into the learner shell.
-- [x] Verified the latest branch commit builds successfully as a Vite deployment on Vercel.
+- [x] Verified an earlier branch commit built successfully on Vercel before automatic branch deployments were disabled.
+
+## Phase 4 — Input Engine — COMPLETE
+
+- [x] Replaced the fixed 200 ms prototype threshold with a timing-model-derived classification boundary.
+- [x] Added keyboard input adapter.
+- [x] Added pointer/mouse input adapter.
+- [x] Added touch-compatible pointer input.
+- [x] Added normalized input device identifiers.
+- [x] Added normalized raw press events with start/end timestamps and duration.
+- [x] Added timing-quality scoring for each press.
+- [x] Added sequence limits and press-duration safety bounds.
+- [x] Added reset-safe input sessions.
+- [x] Added learner-facing Morse input pad.
+- [x] Added visual dit/dah feedback and timing diagnostics.
+- [x] Added WPM-derived default calibration.
+- [x] Added custom dit/dah calibration controls.
+- [x] Added a recalculated classification boundary between dit and dah targets.
+- [x] Kept calibration diagnostics separate from progression/mastery so Phase 4 does not prematurely bias learning outcomes.
+- [x] Documented the normalized input contract and future hardware adapter boundary.
 
 ## Not yet released
 
-- [ ] Phase 4 input engine
-- [ ] Touch input
-- [ ] Input calibration
+- [ ] Phase 5 learning modes
 - [ ] Audio recognition exercises
-- [ ] Timing-quality scoring
 - [ ] Formal mastery calculation
 - [ ] Spaced repetition scheduler
 - [ ] Adaptive exercise selection
@@ -74,6 +92,6 @@ Phase 2 curriculum architecture and Phase 3 audio/timing implementation are comp
 
 ## Validation notes
 
-The local container cannot currently resolve `github.com`, so a local `npm install`/`npm run build` cannot be executed from this session. However, the latest branch commit has been built successfully by the connected Vercel Vite deployment and is in `READY` state.
+The local container cannot currently resolve `github.com`, so a local `npm install`/`npm run build` cannot be executed from this session. The GitHub repository state and branch-level source changes have been inspected directly. Browser/device QA and a full local build remain explicit final-release checks.
 
-The Vercel preview is a development preview only. It has not been promoted or merged to production. Production remains the final `main` merge for the single large release.
+The upgrade branch is not deployed automatically to Vercel. No production deployment is intended until the complete large-scale upgrade is merged to `main`.
