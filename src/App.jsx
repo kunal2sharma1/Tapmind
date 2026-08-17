@@ -6,8 +6,10 @@ import MorseAudioControls from "./components/MorseAudioControls";
 import MorseLearningModeSelector from "./components/MorseLearningModeSelector";
 import MorseLearningSession from "./components/MorseLearningSession";
 import MorseMasteryCard from "./components/MorseMasteryCard";
+import MorseDailyPlan from "./components/MorseDailyPlan";
 import levelsData from "./modules/morse/levels.json";
 import useProgress from "./hooks/useProgress";
+import useDailyLearning from "./hooks/useDailyLearning";
 import { MORSE_LEARNING_MODES } from "./modules/morse/learningModes";
 import { buildCurriculum, getLessonByLevel } from "./domain/curriculum";
 import "./styles/global.css";
@@ -19,7 +21,7 @@ export default function App() {
   const [selectedLevel, setSelectedLevel] = useState(progress.currentLevel || 1);
   const [learningMode, setLearningMode] = useState(MORSE_LEARNING_MODES.LEARN);
 
-  const curriculum = useMemo(() => buildCurriculum(levelsData), []);
+  const curriculum = buildCurriculum(levelsData);
   const levels = curriculum.map((item) => item.raw);
   const currentItem = getLessonByLevel(curriculum, selectedLevel) || curriculum[0];
   const currentLevel = currentItem.raw;
@@ -27,25 +29,37 @@ export default function App() {
   const currentCharacter = currentItem.character;
   const currentMastery = getMastery(currentCharacter?.letter ?? currentCharacter?.symbol ?? "");
 
-  const availableCharacters = useMemo(() => {
-    const introduced = curriculum
-      .filter((item) => item.raw.level <= selectedLevel)
+  const introducedCharacters = useMemo(
+    () => curriculum
+      .slice(0, Math.max(1, selectedLevel))
       .map((item) => item.character)
-      .filter(Boolean)
-      .map((character) => ({
-        id: character.id,
-        symbol: character.symbol,
-        morse: character.morse,
-        category: character.category,
-      }));
-    return [...new Map(introduced.map((character) => [character.id, character])).values()];
-  }, [curriculum, selectedLevel]);
+      .filter(Boolean),
+    [curriculum, selectedLevel]
+  );
+
+  const { summary, startOrRefresh } = useDailyLearning({
+    progress,
+    introducedCharacters,
+  });
 
   function handleLevelSelect(levelNumber) {
     if (!isLevelUnlocked(levelNumber)) return;
     setSelectedLevel(levelNumber);
     setCurrentLevel(levelNumber);
   }
+
+  function startDailySession() {
+    startOrRefresh();
+    setLearningMode(MORSE_LEARNING_MODES.MIXED);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  const sessionProps = {
+    mode: learningMode,
+    currentCharacter,
+    currentLevel,
+    recordAttempt,
+  };
 
   return (
     <div className="app-shell">
@@ -59,6 +73,8 @@ export default function App() {
           isLevelUnlocked={isLevelUnlocked}
         />
         <div className="learning-column">
+          <MorseDailyPlan summary={summary} onStart={startDailySession} />
+
           <MorseLearningModeSelector
             value={learningMode}
             onChange={setLearningMode}
@@ -78,14 +94,7 @@ export default function App() {
               completeLevel={completeLevel}
             />
           ) : (
-            <MorseLearningSession
-              mode={learningMode}
-              currentCharacter={currentCharacter}
-              currentLevel={currentLevel}
-              availableCharacters={availableCharacters}
-              characterMastery={progress.mastery}
-              recordAttempt={recordAttempt}
-            />
+            <MorseLearningSession {...sessionProps} />
           )}
 
           {learningMode === MORSE_LEARNING_MODES.LEARN && currentCharacter?.morse && (
