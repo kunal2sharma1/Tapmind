@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "validate:curriculum": "node scripts/validate-curriculum.mjs"
+    "validate:curriculum": "node scripts/validate-curriculum.mjs",
+    "validate:learning-modes": "node scripts/validate-learning-modes.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
