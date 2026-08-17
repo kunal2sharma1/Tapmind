@@ -26,6 +26,7 @@ export default function MainContent({
     handlePointerUp,
     handlePointerCancel,
     resetInput,
+    setCalibration,
   } = useMorseInput();
 
   const {
@@ -196,6 +197,18 @@ export default function MainContent({
   const showInput = mode === "practice" || mode === "test";
   const latestEvent = events.at(-1);
 
+  function updateDotDuration(value) {
+    const dotDurationMs = Number(value);
+    const dashDurationMs = Math.max(dotDurationMs + 10, calibration.dashDurationMs);
+    setCalibration({ dotDurationMs, dashDurationMs });
+  }
+
+  function updateDashDuration(value) {
+    const dashDurationMs = Number(value);
+    const dotDurationMs = Math.min(dashDurationMs - 10, calibration.dotDurationMs);
+    setCalibration({ dotDurationMs, dashDurationMs });
+  }
+
   return (
     <main className="main-content">
       <h2>{currentLevel.label}</h2>
@@ -241,11 +254,43 @@ export default function MainContent({
           )}
 
           {calibration && timing && (
-            <div className="morse-input-calibration">
-              <span>Dot target: {Math.round(timing.dotMs)} ms</span>
-              <span>Dash target: {Math.round(timing.dashMs)} ms</span>
-              <span>Boundary: {Math.round(calibration.thresholdMs)} ms</span>
-            </div>
+            <section className="morse-calibration-card" aria-label="Morse input calibration">
+              <div className="morse-calibration-header">
+                <div>
+                  <strong>Input calibration</strong>
+                  <p>Adjust your press targets without changing Morse timing standards.</p>
+                </div>
+                <span>{Math.round(calibration.thresholdMs)} ms boundary</span>
+              </div>
+
+              <label>
+                <span>Dit target: {Math.round(calibration.dotDurationMs)} ms</span>
+                <input
+                  type="range"
+                  min="40"
+                  max="800"
+                  step="10"
+                  value={Math.round(calibration.dotDurationMs)}
+                  onChange={(event) => updateDotDuration(event.target.value)}
+                />
+              </label>
+
+              <label>
+                <span>Dah target: {Math.round(calibration.dashDurationMs)} ms</span>
+                <input
+                  type="range"
+                  min="80"
+                  max="1800"
+                  step="10"
+                  value={Math.round(calibration.dashDurationMs)}
+                  onChange={(event) => updateDashDuration(event.target.value)}
+                />
+              </label>
+
+              <div className="morse-calibration-reference">
+                Standard at {Math.round(timing.wpm)} WPM: dit {Math.round(timing.dotMs)} ms · dah {Math.round(timing.dashMs)} ms
+              </div>
+            </section>
           )}
         </>
       )}
@@ -291,7 +336,7 @@ export default function MainContent({
       </div>
 
       {activeNav === "Morse" && (
-        <p className="instruction-hint">Morse input supports keyboard and pointer devices.</p>
+        <p className="instruction-hint">Morse input supports keyboard, touch, and mouse.</p>
       )}
     </main>
   );
