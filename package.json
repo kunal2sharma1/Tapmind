@@ -9,14 +9,15 @@
     "preview": "vite preview",
     "validate:curriculum": "node scripts/validate-curriculum.mjs",
     "validate:learning-modes": "node scripts/validate-learning-modes.mjs",
-    "validate:exercises": "node scripts/validate-exercise-generator.mjs"
+    "validate:exercises": "node scripts/validate-exercise-generator.mjs",
+    "validate:mastery": "node scripts/validate-mastery.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.1",
+    "@vitejs/plugin-react": "^4.3.2",
     "vite": "^5.4.2"
   }
 }
