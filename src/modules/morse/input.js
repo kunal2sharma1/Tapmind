@@ -24,12 +24,6 @@ function finiteOr(value, fallback) {
   return Number.isFinite(value) ? value : fallback;
 }
 
-/**
- * Resolve the classification boundary between a dit and dah from the
- * configured character speed. A midpoint between the one-unit and three-unit
- * element durations leaves room for natural timing variation while preserving
- * a clear separation.
- */
 export function getPressCalibration({
   wpm = MORSE_INPUT_DEFAULTS.wpm,
   characterWpm = wpm
@@ -44,7 +38,28 @@ export function getPressCalibration({
     dashDurationMs,
     thresholdMs,
     recommendedDotMaxMs: Math.round(thresholdMs),
-    recommendedDashMinMs: Math.round(thresholdMs)
+    recommendedDashMinMs: Math.round(thresholdMs),
+    source: "timing-model"
+  });
+}
+
+export function normalizeCalibration({ dotDurationMs, dashDurationMs, thresholdMs } = {}, fallback) {
+  const base = fallback ?? getPressCalibration();
+  const dot = clamp(finiteOr(dotDurationMs, base.dotDurationMs), 20, 2_000);
+  const dash = clamp(finiteOr(dashDurationMs, base.dashDurationMs), dot + 10, 4_000);
+  const threshold = clamp(
+    finiteOr(thresholdMs, (dot + dash) / 2),
+    dot + 1,
+    dash - 1
+  );
+
+  return Object.freeze({
+    dotDurationMs: dot,
+    dashDurationMs: dash,
+    thresholdMs: threshold,
+    recommendedDotMaxMs: Math.round(threshold),
+    recommendedDashMinMs: Math.round(threshold),
+    source: "custom"
   });
 }
 
@@ -53,12 +68,14 @@ export function classifyPressDuration(durationMs, calibration = getPressCalibrat
   return durationMs < calibration.thresholdMs ? "." : "-";
 }
 
-export function measureTimingQuality(durationMs, symbol, timing = getStandardTiming()) {
+export function measureTimingQuality(durationMs, symbol, timing = getStandardTiming(), calibration) {
   if (!Number.isFinite(durationMs) || durationMs <= 0) {
     return { score: 0, label: "invalid", errorRatio: 1 };
   }
 
-  const expectedMs = symbol === "." ? timing.dotMs : timing.dashMs;
+  const expectedMs = calibration
+    ? symbol === "." ? calibration.dotDurationMs : calibration.dashDurationMs
+    : symbol === "." ? timing.dotMs : timing.dashMs;
   const errorRatio = Math.abs(durationMs - expectedMs) / expectedMs;
   const score = clamp(Math.round((1 - errorRatio) * 100), 0, 100);
 
@@ -80,7 +97,9 @@ export function createMorseInputSession(options = {}) {
     characterWpm: config.characterWpm,
     mode: config.timingMode
   });
-  const calibration = getPressCalibration(config);
+  let calibration = config.calibration
+    ? normalizeCalibration(config.calibration, getPressCalibration(config))
+    : getPressCalibration(config);
 
   let sequence = "";
   let pressStartedAt = null;
@@ -99,12 +118,12 @@ export function createMorseInputSession(options = {}) {
 
     const durationMs = timestamp - pressStartedAt;
     const symbol = classifyPressDuration(durationMs, calibration);
-    const timingQuality = symbol ? measureTimingQuality(durationMs, symbol, timing) : null;
+    const timingQuality = symbol
+      ? measureTimingQuality(durationMs, symbol, timing, calibration)
+      : null;
 
     if (symbol && durationMs >= config.minimumPressMs && durationMs <= config.maximumPressMs) {
-      if (sequence.length < config.maxSequenceLength) {
-        sequence += symbol;
-      }
+      if (sequence.length < config.maxSequenceLength) sequence += symbol;
 
       const event = Object.freeze({
         device: activeDevice,
@@ -126,6 +145,11 @@ export function createMorseInputSession(options = {}) {
     return null;
   }
 
+  function setCalibration(nextCalibration) {
+    calibration = normalizeCalibration(nextCalibration, calibration);
+    return calibration;
+  }
+
   function reset() {
     sequence = "";
     pressStartedAt = null;
@@ -144,7 +168,7 @@ export function createMorseInputSession(options = {}) {
     });
   }
 
-  return Object.freeze({ startPress, endPress, reset, snapshot });
+  return Object.freeze({ startPress, endPress, setCalibration, reset, snapshot });
 }
 
 export function isSupportedInputDevice(device) {
