@@ -1,0 +1,109 @@
+.morse-mode-selector {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.morse-mode-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.morse-mode-heading h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.morse-mode-skill-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.morse-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.morse-mode-option {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 13px 14px;
+  text-align: left;
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s, transform 0.1s;
+}
+
+.morse-mode-option:hover:not(:disabled) {
+  border-color: var(--text-muted);
+  background: var(--surface-3);
+}
+
+.morse-mode-option:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.morse-mode-option.is-active {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+  color: var(--text-primary);
+}
+
+.morse-mode-option:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.morse-mode-option-title {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 800;
+  color: inherit;
+}
+
+.morse-mode-option-description {
+  font-size: 11px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.morse-mode-detail {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-top: 13px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.morse-mode-chip {
+  padding: 4px 7px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  color: var(--text-secondary);
+}
+
+@media (max-width: 640px) {
+  .morse-mode-grid {
+    grid-template-columns: 1fr;
+  }
+}
