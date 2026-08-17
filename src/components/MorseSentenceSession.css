@@ -1,0 +1,8 @@
+.morse-sentence-session { display: grid; gap: 16px; }
+.sentence-morse-prompt, .sentence-text-prompt { padding: 20px; border-radius: 14px; background: rgba(255,255,255,0.04); text-align: center; line-height: 1.7; word-break: break-word; }
+.sentence-morse-prompt { font-family: monospace; font-size: 1.2rem; letter-spacing: 0.14em; }
+.sentence-text-prompt { font-size: 1.35rem; font-weight: 650; }
+.sentence-choice-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.sentence-choice { min-height: 64px; padding: 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.12); background: rgba(255,255,255,0.03); cursor: pointer; text-align: left; }
+.sentence-choice:disabled { opacity: 0.7; cursor: default; }
+@media (max-width: 700px) { .sentence-choice-grid { grid-template-columns: 1fr; } }
