@@ -46,6 +46,7 @@ export default function MorseLearningSession({
   const [feedback, setFeedback] = useState(null);
   const [selectedSymbol, setSelectedSymbol] = useState("");
   const [started, setStarted] = useState(false);
+  const [completed, setCompleted] = useState(false);
   const [reveal, setReveal] = useState(false);
 
   const target = useMemo(() => ({
@@ -71,6 +72,7 @@ export default function MorseLearningSession({
 
   function begin() {
     setStarted(true);
+    setCompleted(false);
     setStep(0);
     setScore(0);
     setFeedback(null);
@@ -80,17 +82,12 @@ export default function MorseLearningSession({
   }
 
   function submit(response) {
-    if (feedback || !started) return;
+    if (feedback || !started || completed) return;
     const result = scoreLearningResponse(exercise, response);
     setFeedback(result.correct ? "correct" : "wrong");
     setReveal(true);
     if (result.correct) setScore((value) => value + 1);
-
-    recordAttempt(
-      currentLevel,
-      result.correct,
-      exercise
-    );
+    recordAttempt(currentLevel, result.correct, exercise);
   }
 
   function submitChoice(symbol) {
@@ -104,7 +101,12 @@ export default function MorseLearningSession({
   }
 
   function next() {
-    if (step + 1 >= SESSION_LENGTH) return;
+    if (step + 1 >= SESSION_LENGTH) {
+      setCompleted(true);
+      stop();
+      return;
+    }
+
     setStep((value) => value + 1);
     setFeedback(null);
     setSelectedSymbol("");
@@ -113,7 +115,18 @@ export default function MorseLearningSession({
     stop();
   }
 
-  const finished = started && step + 1 >= SESSION_LENGTH && Boolean(feedback);
+  function restart() {
+    setCompleted(false);
+    setStarted(false);
+    setStep(0);
+    setScore(0);
+    setFeedback(null);
+    setSelectedSymbol("");
+    setReveal(false);
+    resetInput();
+    stop();
+  }
+
   const needsInput = [
     MORSE_LEARNING_MODES.RECALL,
     MORSE_LEARNING_MODES.AUDIO_RECALL,
@@ -140,7 +153,7 @@ export default function MorseLearningSession({
     );
   }
 
-  if (finished) {
+  if (completed) {
     return (
       <section className="morse-session card">
         <p className="card-label">Session complete</p>
@@ -148,8 +161,11 @@ export default function MorseLearningSession({
         <p className="morse-session-feedback">
           {score === SESSION_LENGTH ? "Excellent consistency." : "Good practice. The next phase will adapt exercise difficulty."}
         </p>
-        <button type="button" className="ctrl-btn btn-next" onClick={begin}>
-          Practice Again →
+        <button type="button" className="ctrl-btn btn-next" onClick={restart}>
+          Choose Another Session →
+        </button>
+        <button type="button" className="ctrl-btn btn-retry" onClick={begin}>
+          Practice Again
         </button>
       </section>
     );
