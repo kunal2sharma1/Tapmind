@@ -12,13 +12,34 @@ Automatic Vercel deployment is disabled for this upgrade branch. `main` remains 
 
 ## Current phase
 
-**Phase 8 — Adaptive Learning — COMPLETE**
+**Phase 9 — Spaced Repetition Scheduler — COMPLETE**
 
-**Next phase:** Phase 9 — Spaced Repetition Scheduler.
+**Next phase:** Phase 10 — Daily Learning System.
 
-Phases 2 through 8 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
+Phases 2 through 9 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
 
-## Phase 8 — Adaptive Learning — COMPLETE
+## Phase 9 — Spaced Repetition Scheduler — COMPLETE
+
+- [x] Added explicit review phases: new, learning, review and relearning.
+- [x] Added review quality levels: fail, hard, good and easy.
+- [x] Added first-exposure learning steps.
+- [x] Added successful-review interval growth.
+- [x] Added easy/hard interval and ease-factor adjustments.
+- [x] Added lapse handling with rapid relearning intervals.
+- [x] Added maximum review-interval cap.
+- [x] Added due-date and overdue-age calculations.
+- [x] Added deterministic due-review queue ranking.
+- [x] Added review queue helpers and summary calculations.
+- [x] Added persistent review state to `tapmind.progress.v4`.
+- [x] Added v3/v2/v1 progress migration into the new review schema.
+- [x] Connected review state to every recorded learning attempt.
+- [x] Integrated due/overdue review priority into the exercise generator, including when mastery-aware ranking is active.
+- [x] Added `validate:reviews` validation command.
+- [x] Documented the scheduler contract and Phase-10 daily-review boundary.
+
+## Earlier completed phases
+
+### Phase 8 — Adaptive Learning — COMPLETE
 
 - [x] Added mastery-aware candidate ranking without replacing the canonical exercise generator.
 - [x] Added weak/underexposed/recent-practice weighting.
@@ -32,7 +53,7 @@ Phases 2 through 8 are complete development phases. Browser/device QA, comprehen
 - [x] Preserved deterministic generation and explicit exercise metadata.
 - [x] Documented the adaptive-learning safety rules and Phase-9 scheduler boundary.
 
-## Phase 7 — Mastery Engine — COMPLETE
+### Phase 7 — Mastery Engine — COMPLETE
 
 - [x] Added multi-dimensional mastery for recognition, recall, audio recognition, audio recall, sending, timing, speed, retention and confidence.
 - [x] Added explicit mastery states: new, introduced, learning, developing, strong, mastered, at-risk and relearning.
@@ -47,8 +68,6 @@ Phases 2 through 8 are complete development phases. Browser/device QA, comprehen
 - [x] Preserved existing v1/v2 character accuracy data during migration.
 - [x] Added learner-facing character mastery summary.
 - [x] Added `validate:mastery` validation command.
-
-## Earlier completed phases
 
 ### Phase 2 — Curriculum Architecture — COMPLETE
 
@@ -136,8 +155,7 @@ Phases 2 through 8 are complete development phases. Browser/device QA, comprehen
 
 ## Not yet released
 
-- [ ] Phase 9 spaced repetition scheduler
-- [ ] Daily review system
+- [ ] Phase 10 daily learning system
 - [ ] Word curriculum
 - [ ] Sentence curriculum
 - [ ] Reception/copying mode
