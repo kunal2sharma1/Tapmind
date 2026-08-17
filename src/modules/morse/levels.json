@@ -1,149 +1,87 @@
 [
   {
     "level": 1,
-    "label": "Dot vs Dash",
+    "id": "morse-foundation",
+    "label": "Morse Foundations",
+    "title": "Morse Foundations",
+    "stage": "foundation",
     "type": "foundation",
+    "skills": ["symbol-discrimination", "timing-awareness"],
+    "objectives": ["Understand dot and dash", "Recognize short versus long signal timing", "Learn the Tapmind input gesture"],
     "letter": null,
     "morse": null,
     "practiceMode": "binary",
-    "practiceRepeats": 3,
-    "assessment": {
-      "enabled": false
-    }
+    "practiceRepeats": 4,
+    "assessment": { "enabled": false, "scope": "current", "questionCount": 0, "passPercent": 1 },
+    "recommendedCharacterWpm": 15,
+    "recommendedEffectiveWpm": 8,
+    "masteryGate": { "minimumAccuracy": 0.85, "minimumAttempts": 4 }
   },
-  {
-    "level": 2,
-    "label": "E (.)",
-    "type": "character",
-    "letter": "E",
-    "morse": ".",
-    "practiceMode": "match",
-    "practiceRepeats": 3,
-    "assessment": {
-      "enabled": true,
-      "scope": "all-learned",
-      "questionCount": 3,
-      "passPercent": 0.67
-    }
-  },
-  {
-    "level": 3,
-    "label": "T (-)",
-    "type": "character",
-    "letter": "T",
-    "morse": "-",
-    "practiceMode": "match",
-    "practiceRepeats": 3,
-    "assessment": {
-      "enabled": true,
-      "scope": "all-learned",
-      "questionCount": 4,
-      "passPercent": 0.75
-    }
-  },
-  {
-    "level": 4,
-    "label": "A (.-)",
-    "type": "character",
-    "letter": "A",
-    "morse": ".-",
-    "practiceMode": "match",
-    "practiceRepeats": 3,
-    "assessment": {
-      "enabled": true,
-      "scope": "all-learned",
-      "questionCount": 5,
-      "passPercent": 0.8
-    }
-  },
-  {
-    "level": 5,
-    "label": "N (-.)",
-    "type": "character",
-    "letter": "N",
-    "morse": "-.",
-    "practiceMode": "match",
-    "practiceRepeats": 3,
-    "assessment": {
-      "enabled": true,
-      "scope": "all-learned",
-      "questionCount": 5,
-      "passPercent": 0.8
-    }
-  },
-  {
-    "level": 6,
-    "label": "I (..)",
-    "type": "character",
-    "letter": "I",
-    "morse": "..",
-    "practiceMode": "match",
-    "practiceRepeats": 3,
-    "assessment": {
-      "enabled": true,
-      "scope": "all-learned",
-      "questionCount": 6,
-      "passPercent": 0.8
-    }
-  },
-  {
-    "level": 7,
-    "label": "M (--)",
-    "type": "character",
-    "letter": "M",
-    "morse": "--",
-    "practiceMode": "match",
-    "practiceRepeats": 3,
-    "assessment": {
-      "enabled": true,
-      "scope": "all-learned",
-      "questionCount": 6,
-      "passPercent": 0.8
-    }
-  },
-  {
-    "level": 8,
-    "label": "S (...)",
-    "type": "character",
-    "letter": "S",
-    "morse": "...",
-    "practiceMode": "match",
-    "practiceRepeats": 3,
-    "assessment": {
-      "enabled": true,
-      "scope": "all-learned",
-      "questionCount": 6,
-      "passPercent": 0.8
-    }
-  },
-  {
-    "level": 9,
-    "label": "O (---)",
-    "type": "character",
-    "letter": "O",
-    "morse": "---",
-    "practiceMode": "match",
-    "practiceRepeats": 3,
-    "assessment": {
-      "enabled": true,
-      "scope": "all-learned",
-      "questionCount": 6,
-      "passPercent": 0.8
-    }
-  },
-  {
-    "level": 10,
-    "label": "Mixed Review",
-    "type": "review",
-    "letter": null,
-    "morse": null,
-    "practiceMode": "none",
-    "practiceRepeats": 0,
-    "assessment": {
-      "enabled": true,
-      "scope": "all-learned",
-      "questionCount": 6,
-      "passPercent": 0.8
-    }
+  { "level": 2, "id": "morse-letter-k", "label": "K (-.-)", "title": "K", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize K as one rhythm", "Reproduce K accurately"], "letter": "K", "morse": "-.-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 5, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 10, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 10 } },
+  { "level": 3, "id": "morse-letter-m", "label": "M (--)", "title": "M", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize M instantly", "Distinguish M from T and K"], "letter": "M", "morse": "--", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 6, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 10, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 12 } },
+  { "level": 4, "id": "morse-letter-r", "label": "R (.-.)", "title": "R", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize R as a complete rhythm", "Avoid translating through dots and dashes"], "letter": "R", "morse": ".-.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 7, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 10, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 14 } },
+  { "level": 5, "id": "morse-letter-s", "label": "S (...) ", "title": "S", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize S instantly", "Distinguish S from H and I"], "letter": "S", "morse": "...", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 8, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 10, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 16 } },
+  { "level": 6, "id": "morse-letter-u", "label": "U (..-)", "title": "U", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize U as one sound", "Compare U with I and V"], "letter": "U", "morse": "..-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 8, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 10, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 16 } },
+  { "level": 7, "id": "morse-letter-a", "label": "A (.-)", "title": "A", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize A automatically", "Distinguish A from N"], "letter": "A", "morse": ".-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 9, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 18 } },
+  { "level": 8, "id": "morse-letter-p", "label": "P (.--.)", "title": "P", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize P without counting", "Distinguish P from R and W"], "letter": "P", "morse": ".--.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 9, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 18 } },
+  { "level": 9, "id": "morse-letter-t", "label": "T (-)", "title": "T", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize T as a single dah", "Use T as a rhythm anchor"], "letter": "T", "morse": "-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 9, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 18 } },
+  { "level": 10, "id": "morse-letter-l", "label": "L (.-..)", "title": "L", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize L as one rhythm", "Distinguish L from F and R"], "letter": "L", "morse": ".-..", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 11, "id": "morse-letter-o", "label": "O (---)", "title": "O", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize O as three dahs", "Distinguish O from M"], "letter": "O", "morse": "---", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 12, "id": "morse-letter-w", "label": "W (.--)", "title": "W", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize W automatically", "Distinguish W from P and J"], "letter": "W", "morse": ".--", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 13, "id": "morse-letter-i", "label": "I (..)", "title": "I", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize I instantly", "Distinguish I from S and U"], "letter": "I", "morse": "..", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 14, "id": "morse-letter-n", "label": "N (-.)", "title": "N", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize N instantly", "Distinguish N from A"], "letter": "N", "morse": "-.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 15, "id": "morse-letter-j", "label": "J (.---)", "title": "J", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize J as one rhythm", "Distinguish J from W"], "letter": "J", "morse": ".---", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 16, "id": "morse-letter-b", "label": "B (-...)", "title": "B", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize B instantly", "Distinguish B from D and V"], "letter": "B", "morse": "-...", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 17, "id": "morse-letter-x", "label": "X (-..-)", "title": "X", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize X as a complete rhythm", "Distinguish X from C"], "letter": "X", "morse": "-..-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 18, "id": "morse-letter-d", "label": "D (-..)", "title": "D", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize D instantly", "Distinguish D from B and G"], "letter": "D", "morse": "-..", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 19, "id": "morse-letter-f", "label": "F (..-.)", "title": "F", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize F as one sound", "Distinguish F from L"], "letter": "F", "morse": "..-.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 20, "id": "morse-letter-h", "label": "H (....)", "title": "H", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize H instantly", "Distinguish H from S and V"], "letter": "H", "morse": "....", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 21, "id": "morse-letter-v", "label": "V (...-)", "title": "V", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize V as one rhythm", "Distinguish V from U and B"], "letter": "V", "morse": "...-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 22, "id": "morse-letter-g", "label": "G (--.)", "title": "G", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize G instantly", "Distinguish G from D and Z"], "letter": "G", "morse": "--.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 23, "id": "morse-letter-z", "label": "Z (--..)", "title": "Z", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize Z automatically", "Distinguish Z from G"], "letter": "Z", "morse": "--..", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 24, "id": "morse-letter-q", "label": "Q (--.-)", "title": "Q", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize Q as one sound", "Distinguish Q from K"], "letter": "Q", "morse": "--.-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 25, "id": "morse-letter-c", "label": "C (-.-.)", "title": "C", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize C automatically", "Distinguish C from X"], "letter": "C", "morse": "-.-.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 26, "id": "morse-letter-y", "label": "Y (-.--)", "title": "Y", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize Y as a complete rhythm", "Distinguish Y from Q"], "letter": "Y", "morse": "-.--", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 27, "id": "morse-letter-e", "label": "E (.)", "title": "E", "stage": "letters", "type": "character", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize E as a single dit", "Use E as a timing anchor"], "letter": "E", "morse": ".", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+
+  { "level": 28, "id": "morse-number-5", "label": "5 (.....)", "title": "Number 5", "stage": "numbers", "type": "number", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize 5 immediately", "Distinguish digit rhythms"], "letter": "5", "morse": ".....", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 29, "id": "morse-number-0", "label": "0 (-----)", "title": "Number 0", "stage": "numbers", "type": "number", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize 0 immediately", "Distinguish 0 from 8 and 9"], "letter": "0", "morse": "-----", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 30, "id": "morse-number-1", "label": "1 (.----)", "title": "Number 1", "stage": "numbers", "type": "number", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize 1 immediately", "Relate digit progression to timing"], "letter": "1", "morse": ".----", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 31, "id": "morse-number-2", "label": "2 (..---)", "title": "Number 2", "stage": "numbers", "type": "number", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize 2 immediately", "Use digit rhythm without counting"], "letter": "2", "morse": "..---", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 32, "id": "morse-number-3", "label": "3 (...--)", "title": "Number 3", "stage": "numbers", "type": "number", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize 3 immediately", "Distinguish 3 from 2 and 4"], "letter": "3", "morse": "...--", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 33, "id": "morse-number-4", "label": "4 (....-)", "title": "Number 4", "stage": "numbers", "type": "number", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize 4 immediately", "Distinguish 4 from 5 and 3"], "letter": "4", "morse": "....-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 34, "id": "morse-number-6", "label": "6 (-....)", "title": "Number 6", "stage": "numbers", "type": "number", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize 6 immediately", "Distinguish 6 from B and 7"], "letter": "6", "morse": "-....", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 35, "id": "morse-number-7", "label": "7 (--...)", "title": "Number 7", "stage": "numbers", "type": "number", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize 7 immediately", "Distinguish 7 from G and 6"], "letter": "7", "morse": "--...", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 36, "id": "morse-number-8", "label": "8 (---..)", "title": "Number 8", "stage": "numbers", "type": "number", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize 8 immediately", "Distinguish 8 from 9 and 0"], "letter": "8", "morse": "---..", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 37, "id": "morse-number-9", "label": "9 (----.)", "title": "Number 9", "stage": "numbers", "type": "number", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize 9 immediately", "Distinguish 9 from 8 and 0"], "letter": "9", "morse": "----.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+
+  { "level": 38, "id": "morse-punctuation-period", "label": ". (.-.-.-)", "title": "Period", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize period in transmitted text", "Send a properly timed period"], "letter": ".", "morse": ".-.-.-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 39, "id": "morse-punctuation-comma", "label": ", (--..--)", "title": "Comma", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize comma in transmitted text", "Send comma timing accurately"], "letter": ",", "morse": "--..--", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 40, "id": "morse-punctuation-question", "label": "? (..--..)", "title": "Question Mark", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize questions in Morse", "Send the question mark rhythm"], "letter": "?", "morse": "..--..", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 41, "id": "morse-punctuation-slash", "label": "/ (-..-.)", "title": "Slash", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize slash in addresses and expressions", "Send slash cleanly"], "letter": "/", "morse": "-..-.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 42, "id": "morse-punctuation-apostrophe", "label": "' (.----.)", "title": "Apostrophe", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize apostrophe", "Use punctuation inside words"], "letter": "'", "morse": ".----.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 43, "id": "morse-punctuation-exclamation", "label": "! (-.-.--)", "title": "Exclamation Mark", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize exclamation mark", "Use expressive punctuation"], "letter": "!", "morse": "-.-.--", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 44, "id": "morse-punctuation-open-paren", "label": "( (-.--.)", "title": "Opening Parenthesis", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize opening parenthesis", "Preserve punctuation rhythm"], "letter": "(", "morse": "-.--.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 45, "id": "morse-punctuation-close-paren", "label": ") (-.--.-)", "title": "Closing Parenthesis", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize closing parenthesis", "Pair punctuation correctly"], "letter": ")", "morse": "-.--.-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 46, "id": "morse-punctuation-ampersand", "label": "& (.-...)", "title": "Ampersand", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize ampersand", "Use it in realistic text"], "letter": "&", "morse": ".-...", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 47, "id": "morse-punctuation-colon", "label": ": (---...)", "title": "Colon", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize colon", "Use it inside structured messages"], "letter": ":", "morse": "---...", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 48, "id": "morse-punctuation-semicolon", "label": "; (-.-.-.)", "title": "Semicolon", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize semicolon", "Separate structured message clauses"], "letter": ";", "morse": "-.-.-.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 49, "id": "morse-punctuation-double-quote", "label": "\" (.-..-.)", "title": "Quotation Mark", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize quotation marks", "Preserve phrase boundaries"], "letter": "\"", "morse": ".-..-.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 50, "id": "morse-punctuation-at", "label": "@ (.--.-.)", "title": "At Sign", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize at sign", "Use it in identifiers"], "letter": "@", "morse": ".--.-.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 51, "id": "morse-punctuation-equals", "label": "= (-...-)", "title": "Equals", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize equals", "Use it in realistic code groups"], "letter": "=", "morse": "-...-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 52, "id": "morse-punctuation-plus", "label": "+ (.-.-.)", "title": "Plus", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize plus", "Use it in operational text"], "letter": "+", "morse": ".-.-.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 53, "id": "morse-punctuation-hyphen", "label": "- (-....-)", "title": "Hyphen", "stage": "punctuation", "type": "punctuation", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Recognize hyphen", "Distinguish punctuation hyphen from the dah symbol"], "letter": "-", "morse": "-....-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 54, "id": "morse-prosign-ar", "label": "AR (.-.-.)", "title": "AR — End of Message", "stage": "prosigns", "type": "prosign", "skills": ["audio-recognition", "operational-context", "sending"], "objectives": ["Recognize AR as an operational signal", "Understand message-boundary use"], "letter": "AR", "morse": ".-.-.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 55, "id": "morse-prosign-bt", "label": "BT (-...-)", "title": "BT — Break", "stage": "prosigns", "type": "prosign", "skills": ["audio-recognition", "operational-context", "sending"], "objectives": ["Recognize BT as a break marker", "Use BT between message thoughts"], "letter": "BT", "morse": "-...-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 56, "id": "morse-prosign-sk", "label": "SK (...-.-)", "title": "SK — End of Contact", "stage": "prosigns", "type": "prosign", "skills": ["audio-recognition", "operational-context", "sending"], "objectives": ["Recognize SK as an ending signal", "Differentiate SK from AR"], "letter": "SK", "morse": "...-.-", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 57, "id": "morse-prosign-kn", "label": "KN (-.--.)", "title": "KN — Invite Specific Station", "stage": "prosigns", "type": "prosign", "skills": ["audio-recognition", "operational-context", "sending"], "objectives": ["Recognize KN in real traffic", "Understand turn-taking context"], "letter": "KN", "morse": "-.--.", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 58, "id": "morse-prosign-as", "label": "AS (.-...)", "title": "AS — Wait", "stage": "prosigns", "type": "prosign", "skills": ["audio-recognition", "operational-context", "sending"], "objectives": ["Recognize AS as a waiting signal", "Use context to interpret it"], "letter": "AS", "morse": ".-...", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 59, "id": "morse-sos", "label": "SOS (...---...)", "title": "SOS", "stage": "prosigns", "type": "prosign", "skills": ["audio-recognition", "operational-context", "sending"], "objectives": ["Recognize SOS immediately", "Send SOS with continuous timing"], "letter": "SOS", "morse": "...---...", "practiceMode": "match", "practiceRepeats": 4, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 10, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 11, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+
+  { "level": 60, "id": "morse-review-letters", "label": "Letters Mastery Review", "title": "Letters Mastery Review", "stage": "review", "type": "review", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Demonstrate stable recognition of all letters", "Identify weakest letter pairs", "Prepare for number training"], "letter": null, "morse": null, "practiceMode": "none", "practiceRepeats": 0, "assessment": { "enabled": true, "scope": "module-letters", "questionCount": 30, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 15, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 30 } },
+  { "level": 61, "id": "morse-review-numbers", "label": "Numbers Mastery Review", "title": "Numbers Mastery Review", "stage": "review", "type": "review", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Demonstrate stable digit recognition", "Identify number confusions", "Prepare for mixed traffic"], "letter": null, "morse": null, "practiceMode": "none", "practiceRepeats": 0, "assessment": { "enabled": true, "scope": "module-numbers", "questionCount": 20, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 15, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 62, "id": "morse-review-punctuation", "label": "Punctuation Mastery Review", "title": "Punctuation Mastery Review", "stage": "review", "type": "review", "skills": ["audio-recognition", "character-recall", "sending"], "objectives": ["Use punctuation in complete messages", "Distinguish punctuation from common character patterns"], "letter": null, "morse": null, "practiceMode": "none", "practiceRepeats": 0, "assessment": { "enabled": true, "scope": "module-punctuation", "questionCount": 20, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 15, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 20 } },
+  { "level": 63, "id": "morse-review-operational", "label": "Operational Morse Review", "title": "Operational Morse Review", "stage": "review", "type": "review", "skills": ["audio-recognition", "character-recall", "sending", "operational-context"], "objectives": ["Decode mixed operational characters", "Recognize common procedural signals", "Move from isolated symbols to context"], "letter": null, "morse": null, "practiceMode": "none", "practiceRepeats": 0, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 35, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 16, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 35 } },
+  { "level": 64, "id": "morse-mixed-mastery", "label": "Morse Mastery Gateway", "title": "Morse Mastery Gateway", "stage": "mastery", "type": "review", "skills": ["audio-recognition", "character-recall", "sending", "retention", "speed"], "objectives": ["Demonstrate broad Morse recognition", "Show readiness for word and sentence training", "Establish a baseline speed and accuracy profile"], "letter": null, "morse": null, "practiceMode": "none", "practiceRepeats": 0, "assessment": { "enabled": true, "scope": "all-learned", "questionCount": 50, "passPercent": 0.9 }, "recommendedCharacterWpm": 20, "recommendedEffectiveWpm": 18, "masteryGate": { "minimumAccuracy": 0.9, "minimumAttempts": 50 }
   }
 ]
