@@ -8,6 +8,9 @@ export const EXERCISE_TYPES = Object.freeze({
   FOUNDATION_BINARY: "foundation-binary",
   CHARACTER_REPRODUCTION: "character-reproduction",
   CHARACTER_RECALL: "character-recall",
+  AUDIO_RECOGNITION: "audio-recognition",
+  AUDIO_REPRODUCTION: "audio-reproduction",
+  TIMING_REPRODUCTION: "timing-reproduction",
   MIXED_ASSESSMENT: "mixed-assessment",
   REVIEW: "review"
 });
@@ -25,6 +28,19 @@ export const PROGRESS_STATES = Object.freeze({
   AVAILABLE: "available",
   IN_PROGRESS: "in-progress",
   COMPLETED: "completed"
+});
+
+export const LEARNING_STAGES = Object.freeze({
+  FOUNDATION: "foundation",
+  LETTERS: "letters",
+  NUMBERS: "numbers",
+  PUNCTUATION: "punctuation",
+  PROSIGNS: "prosigns",
+  REVIEW: "review",
+  MASTERY: "mastery",
+  WORDS: "words",
+  SENTENCES: "sentences",
+  FLUENCY: "fluency"
 });
 
 export function getLevelId(level) {
@@ -53,9 +69,11 @@ export function createCharacter(level) {
     id: character?.id ?? getCharacterId(level),
     moduleId: level.moduleId ?? "morse",
     level: level.level,
+    symbol: character?.symbol ?? level.letter ?? null,
     letter: character?.symbol ?? level.letter ?? null,
     morse: character?.morse ?? level.morse ?? null,
     category: character?.category ?? null,
+    stage: level.stage ?? null,
     label: level.label,
     state: character ? MASTERY_STATES.NEW : null
   };
@@ -66,7 +84,9 @@ export function createExercise(level, type) {
     id: `${getLevelId(level)}-${type}`,
     type,
     levelId: getLevelId(level),
-    characterId: getCharacterId(level)
+    characterId: getCharacterId(level),
+    stage: level.stage ?? null,
+    skillTags: level.skills ?? []
   };
 }
 
@@ -77,7 +97,18 @@ export function createLesson(level) {
     level: level.level,
     title: level.title ?? level.label,
     type: level.type,
+    stage: level.stage ?? null,
     characterId: getCharacterId(level),
+    skills: level.skills ?? [],
+    objectives: level.objectives ?? [],
+    progression: {
+      prerequisites: level.prerequisites ?? [],
+      masteryGate: level.masteryGate ?? null
+    },
+    timing: {
+      recommendedCharacterWpm: level.recommendedCharacterWpm ?? null,
+      recommendedEffectiveWpm: level.recommendedEffectiveWpm ?? null
+    },
     practice: {
       mode: level.practiceMode ?? "none",
       repeats: level.practiceRepeats ?? 0
@@ -100,7 +131,8 @@ export function createAttempt({
   input = "",
   expected = "",
   correct = false,
-  durationMs = null
+  durationMs = null,
+  metadata = {}
 }) {
   return {
     id,
@@ -111,15 +143,17 @@ export function createAttempt({
     expected,
     correct,
     durationMs,
+    metadata,
     createdAt: new Date().toISOString()
   };
 }
 
-export function createSession({ moduleId = "morse", lessonId, id }) {
+export function createSession({ moduleId = "morse", lessonId, id, mode = "learning" }) {
   return {
     id,
     moduleId,
     lessonId,
+    mode,
     startedAt: new Date().toISOString(),
     completedAt: null,
     attempts: [],
@@ -136,7 +170,16 @@ export function createMastery() {
     correct: 0,
     accuracy: 0,
     recentAccuracy: 0,
-    lastPracticedAt: null
+    recognition: 0,
+    recall: 0,
+    audioRecognition: 0,
+    sending: 0,
+    timing: 0,
+    speed: 0,
+    retention: 0,
+    confidence: 0,
+    lastPracticedAt: null,
+    nextReviewAt: null
   };
 }
 
@@ -155,12 +198,23 @@ export function createProgress(lessons) {
 
 export function getExerciseTypes(level) {
   if (level.type === "foundation") return [EXERCISE_TYPES.FOUNDATION_BINARY];
-  if (level.type === "review") return [EXERCISE_TYPES.MIXED_ASSESSMENT];
-  if (level.type === "character") {
+
+  if (level.type === "review") {
     return [
-      EXERCISE_TYPES.CHARACTER_REPRODUCTION,
-      EXERCISE_TYPES.CHARACTER_RECALL
+      EXERCISE_TYPES.MIXED_ASSESSMENT,
+      EXERCISE_TYPES.AUDIO_RECOGNITION,
+      EXERCISE_TYPES.TIMING_REPRODUCTION
     ];
   }
-  return [];
+
+  if (["character", "number", "punctuation", "prosign"].includes(level.type)) {
+    return [
+      EXERCISE_TYPES.CHARACTER_REPRODUCTION,
+      EXERCISE_TYPES.CHARACTER_RECALL,
+      EXERCISE_TYPES.AUDIO_RECOGNITION,
+      EXERCISE_TYPES.TIMING_REPRODUCTION
+    ];
+  }
+
+  return [EXERCISE_TYPES.REVIEW];
 }
