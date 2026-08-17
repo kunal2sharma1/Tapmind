@@ -7,6 +7,7 @@ import levelsData from "./modules/morse/levels.json";
 import useProgress from "./hooks/useProgress";
 import { buildCurriculum, getLessonByLevel } from "./domain/curriculum";
 import "./styles/global.css";
+import "./styles/learning-column.css";
 
 export default function App() {
   const { progress, recordAttempt, completeLevel, setCurrentLevel, isLevelUnlocked } = useProgress();
