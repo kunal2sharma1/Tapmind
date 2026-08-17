@@ -1,0 +1,40 @@
+{
+  "metadata": {
+    "version": 1,
+    "moduleId": "morse-sentences",
+    "description": "Curated sentence corpus for progressive Morse message comprehension.",
+    "levels": ["foundation", "basic", "operational", "advanced"]
+  },
+  "sentences": [
+    {"id":"sentence-001","text":"MEET ME","level":"foundation","difficulty":1,"tags":["greeting","short"]},
+    {"id":"sentence-002","text":"GOOD DAY","level":"foundation","difficulty":1,"tags":["greeting","short"]},
+    {"id":"sentence-003","text":"HOW ARE YOU","level":"foundation","difficulty":1,"tags":["conversation","short"]},
+    {"id":"sentence-004","text":"I AM READY","level":"foundation","difficulty":1,"tags":["conversation","short"]},
+    {"id":"sentence-005","text":"SEND HELP","level":"foundation","difficulty":1,"tags":["emergency","short"]},
+    {"id":"sentence-006","text":"STAND BY","level":"foundation","difficulty":1,"tags":["radio","short"]},
+    {"id":"sentence-007","text":"GO AHEAD","level":"foundation","difficulty":1,"tags":["radio","short"]},
+    {"id":"sentence-008","text":"THANK YOU","level":"foundation","difficulty":1,"tags":["conversation","short"]},
+    {"id":"sentence-009","text":"CALL ME","level":"foundation","difficulty":1,"tags":["conversation","short"]},
+    {"id":"sentence-010","text":"WAIT HERE","level":"foundation","difficulty":1,"tags":["instruction","short"]},
+    {"id":"sentence-011","text":"ALL IS WELL","level":"basic","difficulty":2,"tags":["status","short"]},
+    {"id":"sentence-012","text":"I WILL SEND","level":"basic","difficulty":2,"tags":["radio","medium"]},
+    {"id":"sentence-013","text":"SEND THE MESSAGE","level":"basic","difficulty":2,"tags":["radio","medium"]},
+    {"id":"sentence-014","text":"MEET AT TEN","level":"basic","difficulty":2,"tags":["meeting","medium"]},
+    {"id":"sentence-015","text":"WE ARE READY","level":"basic","difficulty":2,"tags":["status","medium"]},
+    {"id":"sentence-016","text":"WHAT IS YOUR NAME","level":"basic","difficulty":2,"tags":["conversation","medium"]},
+    {"id":"sentence-017","text":"PLEASE SEND AGAIN","level":"basic","difficulty":2,"tags":["radio","medium"]},
+    {"id":"sentence-018","text":"MESSAGE RECEIVED","level":"basic","difficulty":2,"tags":["radio","medium"]},
+    {"id":"sentence-019","text":"WAIT FOR MY SIGNAL","level":"operational","difficulty":3,"tags":["radio","instruction"]},
+    {"id":"sentence-020","text":"SEND YOUR POSITION","level":"operational","difficulty":3,"tags":["radio","instruction"]},
+    {"id":"sentence-021","text":"THE SIGNAL IS WEAK","level":"operational","difficulty":3,"tags":["radio","reception"]},
+    {"id":"sentence-022","text":"REPEAT THE LAST MESSAGE","level":"operational","difficulty":3,"tags":["radio","reception"]},
+    {"id":"sentence-023","text":"I CANNOT COPY YOU","level":"operational","difficulty":3,"tags":["radio","reception"]},
+    {"id":"sentence-024","text":"STAND BY FOR FURTHER INSTRUCTIONS","level":"advanced","difficulty":4,"tags":["radio","long"]},
+    {"id":"sentence-025","text":"SEND THE MESSAGE WHEN READY","level":"advanced","difficulty":4,"tags":["radio","long"]},
+    {"id":"sentence-026","text":"WE WILL MEET AT THE STATION","level":"advanced","difficulty":4,"tags":["meeting","long"]},
+    {"id":"sentence-027","text":"YOUR TRANSMISSION WAS RECEIVED CLEARLY","level":"advanced","difficulty":4,"tags":["radio","long"]},
+    {"id":"sentence-028","text":"PLEASE REPEAT THE MESSAGE SLOWLY","level":"advanced","difficulty":4,"tags":["radio","long"]},
+    {"id":"sentence-029","text":"THE WEATHER IS GOOD TODAY","level":"advanced","difficulty":4,"tags":["status","long"]},
+    {"id":"sentence-030","text":"CONTACT ME WHEN YOU ARRIVE","level":"advanced","difficulty":4,"tags":["instruction","long"]}
+  ]
+}
