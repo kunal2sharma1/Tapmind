@@ -10,67 +10,50 @@ This branch is one large product upgrade. Do not merge to `main` until the compl
 
 ## Current phase
 
-**Phase 3 — Audio + Timing Engine**
+**Phase 3 — COMPLETE**
 
-Phase 3 implementation foundation is complete. UI integration and end-to-end browser verification remain before the phase can be considered release-ready.
+**Next phase:** Phase 4 — Input Engine
 
-## Completed implementation slices
+Phase 2 curriculum architecture and Phase 3 audio/timing implementation are complete as development phases. Browser/device audio quality testing remains part of the final end-to-end QA phase and is intentionally not treated as a reason to block the phase transition.
 
-### Foundation and roadmap
-- [x] Created the 47-phase Morse Master Product roadmap.
-- [x] Created the dedicated upgrade branch.
-- [x] Added the roadmap and curriculum specifications to the repository.
+## Phase 2 — Curriculum Architecture — COMPLETE
 
-### Knowledge model
-- [x] Added canonical Morse character catalog.
-- [x] Added catalog lookup helpers.
-- [x] Added category helpers for letters, numbers, punctuation, and prosigns.
-- [x] Added validation for canonical character shape.
-- [x] Added ambiguous Morse-pattern support.
+- [x] Expanded the original 10-level prototype into a staged 64-lesson Morse path.
+- [x] Added foundation, letters, numbers, punctuation, prosigns, review, and mastery stages.
+- [x] Added explicit learning objectives and skill metadata.
+- [x] Added timing recommendations and mastery gates.
+- [x] Added explicit review gateways.
+- [x] Connected lesson characters to the canonical Morse catalog.
+- [x] Added curriculum validation helpers.
+- [x] Added a standalone `validate:curriculum` command.
+- [x] Added progress-storage v2 migration so old numeric level meanings are not silently reused.
+- [x] Preserved existing character statistics where possible during migration.
+- [x] Added ambiguous Morse-pattern support for catalog lookups.
 
-### Timing model
+## Phase 3 — Audio + Timing Engine — COMPLETE
+
 - [x] Added centralized Morse timing constants and calculations.
 - [x] Added standard WPM support.
 - [x] Added character-speed/effective-speed separation.
 - [x] Added Farnsworth-ready spacing calculations.
-- [x] Added character timeline generation for audio scheduling and future input analysis.
-
-### Audio engine
+- [x] Added character timeline generation for scheduled audio and future input analysis.
 - [x] Added browser-safe Web Audio engine abstraction.
-- [x] Added tone frequency controls.
-- [x] Added volume controls.
-- [x] Added waveform controls.
-- [x] Added envelope attack/release controls.
+- [x] Added configurable tone frequency.
+- [x] Added configurable volume.
+- [x] Added configurable waveform.
+- [x] Added attack/release envelope shaping.
 - [x] Added scheduled dot/dash playback from Morse timelines.
-- [x] Added named beginner/comfortable/standard/fast/expert audio profiles.
-- [ ] Integrate playback controls into learner UI.
-- [ ] Add browser/device audio QA.
-
-### Curriculum
-- [x] Expanded from the original 10-level prototype to a staged 64-lesson Morse path.
-- [x] Added foundation, letters, numbers, punctuation, prosigns, review, and mastery stages.
-- [x] Added objectives, skills, timing recommendations, and mastery gates.
-- [x] Added explicit review gateways.
-- [x] Added curriculum validation helpers.
-- [x] Added a standalone curriculum validator command.
-
-### Domain model
-- [x] Added learning stages.
-- [x] Added audio/timing exercise types.
-- [x] Added rich lesson metadata.
-- [x] Expanded mastery dimensions for future adaptive learning.
-- [x] Expanded attempt/session metadata for future analytics.
-
-### Persistence
-- [x] Bumped progress storage to v2.
-- [x] Added migration from the original 10-level v1 structure.
-- [x] Preserved existing character statistics where possible.
-- [x] Avoided blindly carrying old numeric level meanings into the new curriculum.
+- [x] Added named training audio profiles for beginner through expert use.
+- [x] Added React audio hook with cleanup and playback-state handling.
+- [x] Added learner-facing audio controls.
+- [x] Added WPM selection and standard/Farnsworth selection to the UI.
+- [x] Added tone-frequency control to the UI.
+- [x] Integrated audio controls into the learner shell.
+- [x] Verified the latest branch commit builds successfully as a Vite deployment on Vercel.
 
 ## Not yet released
 
-- [ ] Audio playback UI
-- [ ] Real-time Morse tone generation in the learner flow
+- [ ] Phase 4 input engine
 - [ ] Touch input
 - [ ] Input calibration
 - [ ] Audio recognition exercises
@@ -86,9 +69,11 @@ Phase 3 implementation foundation is complete. UI integration and end-to-end bro
 - [ ] Realistic noise/signal simulation
 - [ ] Advanced learner dashboard
 - [ ] Automated test runner and full test suite
-- [ ] Full local production build verification
+- [ ] Full local development-environment build verification
 - [ ] Final end-to-end QA
 
-## Current validation limitation
+## Validation notes
 
-The GitHub connector can inspect and modify repository state, but this session does not have a guaranteed local dependency install or browser test environment for the branch. Do not mark the branch release-ready until the final implementation is locally built and exercised end-to-end.
+The local container cannot currently resolve `github.com`, so a local `npm install`/`npm run build` cannot be executed from this session. However, the latest branch commit has been built successfully by the connected Vercel Vite deployment and is in `READY` state.
+
+The Vercel preview is a development preview only. It has not been promoted or merged to production. Production remains the final `main` merge for the single large release.
