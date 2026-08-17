@@ -15,7 +15,19 @@ export default function MainContent({
   recordAttempt,
   completeLevel,
 }) {
-  const { inputSequence, isPressed, resetInput } = useMorseInput();
+  const {
+    inputSequence,
+    isPressed,
+    activeDevice,
+    events,
+    timing,
+    calibration,
+    handlePointerDown,
+    handlePointerUp,
+    handlePointerCancel,
+    resetInput,
+  } = useMorseInput();
+
   const {
     totalScore,
     streak,
@@ -145,9 +157,11 @@ export default function MainContent({
         <section className="card instruction-card">
           <p className="card-label">Practice</p>
           <p className="instruction-hint">
-            Tap the Morse code ({practiceCount + 1} / {target})
+            Send the Morse code ({practiceCount + 1} / {target})
           </p>
-          <p className="instruction-hint">Press Enter to check early.</p>
+          <p className="instruction-hint">
+            Use the spacebar, or press and hold the input pad below.
+          </p>
         </section>
       );
     }
@@ -180,6 +194,7 @@ export default function MainContent({
   }
 
   const showInput = mode === "practice" || mode === "test";
+  const latestEvent = events.at(-1);
 
   return (
     <main className="main-content">
@@ -188,20 +203,51 @@ export default function MainContent({
       {renderInstruction()}
 
       {showInput && (
-        <div className="input-display" aria-live="polite">
-          <div className="symbol-row">
-            {inputSequence.length === 0 ? (
-              <span className="input-placeholder-text">
-                Press spacebar to start
-              </span>
-            ) : (
-              <>
-                {renderSymbols(inputSequence)}
-                {isPressed && <span className="press-cursor" />}
-              </>
-            )}
+        <>
+          <div className="input-display" aria-live="polite">
+            <div className="symbol-row">
+              {inputSequence.length === 0 ? (
+                <span className="input-placeholder-text">
+                  Press spacebar or hold the input pad
+                </span>
+              ) : (
+                <>
+                  {renderSymbols(inputSequence)}
+                  {isPressed && <span className="press-cursor" />}
+                </>
+              )}
+            </div>
           </div>
-        </div>
+
+          <button
+            type="button"
+            className={`morse-input-pad ${isPressed ? "is-pressed" : ""}`}
+            onPointerDown={handlePointerDown}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerCancel}
+            onPointerLeave={handlePointerCancel}
+            aria-label="Morse input pad. Press and hold for dot or dash."
+          >
+            <span>{isPressed ? "RELEASE" : "PRESS & HOLD"}</span>
+            <small>{activeDevice ? `Input: ${activeDevice}` : "Keyboard or touch"}</small>
+          </button>
+
+          {latestEvent && (
+            <div className="morse-input-meta" aria-live="polite">
+              <span>{latestEvent.symbol === "." ? "DIT" : "DAH"}</span>
+              <span>{Math.round(latestEvent.durationMs)} ms</span>
+              <span>Timing {latestEvent.timingQuality.score}/100</span>
+            </div>
+          )}
+
+          {calibration && timing && (
+            <div className="morse-input-calibration">
+              <span>Dot target: {Math.round(timing.dotMs)} ms</span>
+              <span>Dash target: {Math.round(timing.dashMs)} ms</span>
+              <span>Boundary: {Math.round(calibration.thresholdMs)} ms</span>
+            </div>
+          )}
+        </>
       )}
 
       {renderFeedback()}
@@ -245,7 +291,7 @@ export default function MainContent({
       </div>
 
       {activeNav === "Morse" && (
-        <p className="instruction-hint">Morse input is currently keyboard-first.</p>
+        <p className="instruction-hint">Morse input supports keyboard and pointer devices.</p>
       )}
     </main>
   );
