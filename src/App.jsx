@@ -2,6 +2,7 @@ import { useState } from "react";
 import Navbar from "./components/Navbar";
 import Sidebar from "./components/Sidebar";
 import MainContent from "./components/MainContent";
+import MorseAudioControls from "./components/MorseAudioControls";
 import levelsData from "./modules/morse/levels.json";
 import useProgress from "./hooks/useProgress";
 import { buildCurriculum, getLessonByLevel } from "./domain/curriculum";
@@ -36,17 +37,25 @@ export default function App() {
           progress={progress}
           isLevelUnlocked={isLevelUnlocked}
         />
-        <MainContent
-          selectedLevel={selectedLevel}
-          activeNav={activeNav}
-          currentLevel={currentLevel}
-          currentLesson={currentLesson}
-          currentCharacter={currentCharacter}
-          levels={levels}
-          onLevelSelect={handleLevelSelect}
-          recordAttempt={recordAttempt}
-          completeLevel={completeLevel}
-        />
+        <div className="learning-column">
+          <MainContent
+            selectedLevel={selectedLevel}
+            activeNav={activeNav}
+            currentLevel={currentLevel}
+            currentLesson={currentLesson}
+            currentCharacter={currentCharacter}
+            levels={levels}
+            onLevelSelect={handleLevelSelect}
+            recordAttempt={recordAttempt}
+            completeLevel={completeLevel}
+          />
+          {currentCharacter?.morse && (
+            <MorseAudioControls
+              morse={currentCharacter.morse}
+              label={`Listen to ${currentCharacter.letter}`}
+            />
+          )}
+        </div>
       </div>
     </div>
   );
