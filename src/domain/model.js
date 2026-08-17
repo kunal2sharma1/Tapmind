@@ -1,3 +1,9 @@
+import {
+  getCharacterByMorse,
+  getCharacterBySymbol,
+  isCanonicalCharacter
+} from "../modules/morse/catalog";
+
 export const EXERCISE_TYPES = Object.freeze({
   FOUNDATION_BINARY: "foundation-binary",
   CHARACTER_REPRODUCTION: "character-reproduction",
@@ -25,19 +31,33 @@ export function getLevelId(level) {
   return level.id ?? `level-${level.level}`;
 }
 
+export function getCanonicalCharacter({ symbol, morse } = {}) {
+  if (symbol) return getCharacterBySymbol(symbol);
+  if (morse) return getCharacterByMorse(morse);
+  return null;
+}
+
 export function getCharacterId(level) {
-  return level.morse ? level.id ?? `morse-${level.level}` : null;
+  const character = getCanonicalCharacter(level);
+  return character?.id ?? (level.morse ? level.id ?? `morse-${level.level}` : null);
 }
 
 export function createCharacter(level) {
+  const character = getCanonicalCharacter(level);
+
+  if (character && !isCanonicalCharacter(character)) {
+    throw new Error(`Invalid canonical Morse character: ${character.id}`);
+  }
+
   return {
-    id: getCharacterId(level),
+    id: character?.id ?? getCharacterId(level),
     moduleId: level.moduleId ?? "morse",
     level: level.level,
-    letter: level.letter ?? null,
-    morse: level.morse ?? null,
+    letter: character?.symbol ?? level.letter ?? null,
+    morse: character?.morse ?? level.morse ?? null,
+    category: character?.category ?? null,
     label: level.label,
-    state: level.morse ? MASTERY_STATES.NEW : null
+    state: character ? MASTERY_STATES.NEW : null
   };
 }
 
