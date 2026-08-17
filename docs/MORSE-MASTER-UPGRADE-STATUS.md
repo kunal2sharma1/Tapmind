@@ -12,11 +12,11 @@ Automatic Vercel deployment is disabled for this upgrade branch. `main` remains 
 
 ## Current phase
 
-**Phase 5 — Learning Modes — COMPLETE**
+**Phase 6 — Exercise Generation Engine — COMPLETE**
 
-**Next phase:** Phase 6 — Exercise Generation Engine.
+**Next phase:** Phase 7 — Mastery Engine.
 
-Phases 2, 3, 4 and 5 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
+Phases 2, 3, 4, 5 and 6 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
 
 ## Phase 2 — Curriculum Architecture — COMPLETE
 
@@ -92,12 +92,26 @@ Phases 2, 3, 4 and 5 are complete development phases. Browser/device QA, compreh
 - [x] Kept timing-quality data diagnostic-only; formal mastery weighting remains later.
 - [x] Added mode-specific feedback without coupling it to the future mastery engine.
 
+## Phase 6 — Exercise Generation Engine — COMPLETE
+
+- [x] Added reusable candidate-pool selection for letters, numbers, punctuation and prosigns.
+- [x] Added baseline content-difficulty classification: introductory, standard, challenging, advanced.
+- [x] Added learner-context weighting for due, weak, unseen and recently practiced items.
+- [x] Added deterministic seeded candidate selection for reproducible sessions.
+- [x] Added category-aware and difficulty-aware distractor generation.
+- [x] Added target/exclusion guarantees so the target cannot be emitted as an independent distractor.
+- [x] Added mode-aware exercise generation through the Phase-5 exercise contract.
+- [x] Added generated-exercise metadata for source, seed, category and difficulty.
+- [x] Added deterministic mixed-session generation across recognition, recall, audio recognition, audio recall and sending.
+- [x] Added `validate:exercises` validation command.
+- [x] Integrated generated exercises into the learner session while preserving the current curriculum target.
+- [x] Documented the generator contract and future mastery integration boundary.
+
 ## Not yet released
 
-- [ ] Phase 6 exercise generation engine
-- [ ] Formal mastery calculation
+- [ ] Phase 7 mastery engine
 - [ ] Spaced repetition scheduler
-- [ ] Adaptive exercise selection
+- [ ] Adaptive exercise selection using formal mastery
 - [ ] Daily review system
 - [ ] Word curriculum
 - [ ] Sentence curriculum
