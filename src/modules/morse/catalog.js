@@ -4,9 +4,21 @@ const CHARACTERS = Object.freeze(catalog.characters.map((character) => Object.fr
 
 const BY_ID = new Map(CHARACTERS.map((character) => [character.id, character]));
 const BY_SYMBOL = new Map(CHARACTERS.map((character) => [character.symbol, character]));
-const BY_MORSE = new Map(
-  CHARACTERS.filter((character) => character.category !== "prosign").map((character) => [character.morse, character])
-);
+const BY_MORSE = new Map();
+
+for (const character of CHARACTERS) {
+  const existing = BY_MORSE.get(character.morse) ?? [];
+  existing.push(character);
+  BY_MORSE.set(character.morse, existing);
+}
+
+for (const [morse, characters] of BY_MORSE) {
+  const preferred = characters.find((character) => character.category !== "prosign") ?? characters[0];
+  BY_MORSE.set(morse, Object.freeze({
+    preferred,
+    all: Object.freeze([...characters])
+  }));
+}
 
 export const MORSE_CATEGORIES = Object.freeze({
   LETTER: "letter",
@@ -29,7 +41,15 @@ export function getCharacterBySymbol(symbol) {
 }
 
 export function getCharacterByMorse(morse) {
-  return morse ? BY_MORSE.get(morse) ?? null : null;
+  return morse ? BY_MORSE.get(morse)?.preferred ?? null : null;
+}
+
+export function getCharactersByMorse(morse) {
+  return morse ? [...(BY_MORSE.get(morse)?.all ?? [])] : [];
+}
+
+export function hasMorseAmbiguity(morse) {
+  return getCharactersByMorse(morse).length > 1;
 }
 
 export function getCharactersByCategory(category) {
