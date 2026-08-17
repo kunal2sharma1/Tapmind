@@ -5,9 +5,9 @@ import MainContent from "./components/MainContent";
 import MorseAudioControls from "./components/MorseAudioControls";
 import MorseLearningModeSelector from "./components/MorseLearningModeSelector";
 import MorseLearningSession from "./components/MorseLearningSession";
+import MorseSentenceSession from "./components/MorseSentenceSession";
 import MorseMasteryCard from "./components/MorseMasteryCard";
 import MorseDailyPlan from "./components/MorseDailyPlan";
-import MorseWordSession from "./components/MorseWordSession";
 import levelsData from "./modules/morse/levels.json";
 import useProgress from "./hooks/useProgress";
 import useDailyLearning from "./hooks/useDailyLearning";
@@ -17,7 +17,15 @@ import "./styles/global.css";
 import "./styles/learning-column.css";
 
 export default function App() {
-  const { progress, recordAttempt, recordWordAttempt, completeLevel, setCurrentLevel, isLevelUnlocked, getMastery } = useProgress();
+  const {
+    progress,
+    recordAttempt,
+    recordSentenceAttempt,
+    completeLevel,
+    setCurrentLevel,
+    isLevelUnlocked,
+    getMastery,
+  } = useProgress();
   const [activeNav, setActiveNav] = useState("Learning");
   const [selectedLevel, setSelectedLevel] = useState(progress.currentLevel || 1);
   const [learningMode, setLearningMode] = useState(MORSE_LEARNING_MODES.LEARN);
@@ -38,7 +46,13 @@ export default function App() {
     [curriculum, selectedLevel]
   );
 
-  const { summary, startOrRefresh } = useDailyLearning({ progress, introducedCharacters });
+  const { summary, startOrRefresh } = useDailyLearning({
+    progress,
+    introducedCharacters,
+  });
+
+  const sentenceMastery = progress.sentenceMastery ?? {};
+  const sentenceDifficulty = selectedLevel >= 55 ? 4 : selectedLevel >= 45 ? 3 : selectedLevel >= 35 ? 2 : 1;
 
   function handleLevelSelect(levelNumber) {
     if (!isLevelUnlocked(levelNumber)) return;
@@ -53,13 +67,27 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  const sessionProps = { mode: learningMode, currentCharacter, currentLevel, recordAttempt };
+  function handleNavigation(item) {
+    setActiveNav(item);
+    if (item === "Learning" || item === "Morse") setLearningMode(MORSE_LEARNING_MODES.LEARN);
+  }
+
+  const sessionProps = {
+    mode: learningMode,
+    currentCharacter,
+    currentLevel,
+    recordAttempt,
+  };
+
+  const showCharacters = activeNav === "Learning" || activeNav === "Morse";
+  const showWords = activeNav === "Words";
+  const showSentences = activeNav === "Sentences";
 
   return (
     <div className="app-shell">
-      <Navbar activeNav={activeNav} onNavChange={setActiveNav} />
+      <Navbar activeNav={activeNav} onNavChange={handleNavigation} />
       <div className="app-body">
-        {activeNav !== "Words" && (
+        {showCharacters && (
           <Sidebar
             levels={levels}
             selectedLevel={selectedLevel}
@@ -69,40 +97,55 @@ export default function App() {
           />
         )}
         <div className="learning-column">
-          {activeNav === "Words" ? (
-            <MorseWordSession
-              wordMastery={progress.wordMastery}
-              onRecordWordAttempt={(word, correct, metadata) => recordWordAttempt(word, correct, { ...metadata, mode: metadata?.mode ?? "word-recall" })}
+          {showCharacters && <MorseDailyPlan summary={summary} onStart={startDailySession} />}
+
+          {showCharacters && <MorseLearningModeSelector value={learningMode} onChange={setLearningMode} />}
+
+          {showCharacters && (
+            learningMode === MORSE_LEARNING_MODES.LEARN ? (
+              <MainContent
+                selectedLevel={selectedLevel}
+                activeNav={activeNav}
+                currentLevel={currentLevel}
+                currentLesson={currentLesson}
+                currentCharacter={currentCharacter}
+                levels={levels}
+                learningMode={learningMode}
+                onLevelSelect={handleLevelSelect}
+                recordAttempt={recordAttempt}
+                completeLevel={completeLevel}
+              />
+            ) : (
+              <MorseLearningSession {...sessionProps} />
+            )
+          )}
+
+          {showCharacters && learningMode === MORSE_LEARNING_MODES.LEARN && currentCharacter?.morse && (
+            <MorseAudioControls morse={currentCharacter.morse} label={`Listen to ${currentCharacter.letter}`} />
+          )}
+
+          {showCharacters && (
+            <MorseMasteryCard
+              symbol={currentCharacter?.letter ?? currentCharacter?.symbol}
+              mastery={currentMastery}
             />
-          ) : (
-            <>
-              <MorseDailyPlan summary={summary} onStart={startDailySession} />
+          )}
 
-              <MorseLearningModeSelector value={learningMode} onChange={setLearningMode} />
+          {showWords && (
+            <section className="card">
+              <p className="card-label">Words</p>
+              <h2>Word learning</h2>
+              <p>Build automatic recognition by moving from individual characters to complete Morse words.</p>
+              <p className="instruction-hint">Use the Words navigation from the top bar to begin the dedicated word session.</p>
+            </section>
+          )}
 
-              {learningMode === MORSE_LEARNING_MODES.LEARN ? (
-                <MainContent
-                  selectedLevel={selectedLevel}
-                  activeNav={activeNav}
-                  currentLevel={currentLevel}
-                  currentLesson={currentLesson}
-                  currentCharacter={currentCharacter}
-                  levels={levels}
-                  learningMode={learningMode}
-                  onLevelSelect={handleLevelSelect}
-                  recordAttempt={recordAttempt}
-                  completeLevel={completeLevel}
-                />
-              ) : (
-                <MorseLearningSession {...sessionProps} />
-              )}
-
-              {learningMode === MORSE_LEARNING_MODES.LEARN && currentCharacter?.morse && (
-                <MorseAudioControls morse={currentCharacter.morse} label={`Listen to ${currentCharacter.letter}`} />
-              )}
-
-              <MorseMasteryCard symbol={currentCharacter?.letter ?? currentCharacter?.symbol} mastery={currentMastery} />
-            </>
+          {showSentences && (
+            <MorseSentenceSession
+              sentenceMastery={sentenceMastery}
+              maxDifficulty={sentenceDifficulty}
+              onAttempt={(exercise, result) => recordSentenceAttempt(exercise.target.id, result.correct)}
+            />
           )}
         </div>
       </div>
