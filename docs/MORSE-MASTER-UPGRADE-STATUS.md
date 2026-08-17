@@ -8,6 +8,12 @@
 
 This branch is one large product upgrade. Do not merge to `main` until the complete release scope is validated. Production deployment should occur from the final merge to `main`, not from intermediate development work.
 
+## Current phase
+
+**Phase 3 — Audio + Timing Engine**
+
+Phase 3 implementation foundation is complete. UI integration and end-to-end browser verification remain before the phase can be considered release-ready.
+
 ## Completed implementation slices
 
 ### Foundation and roadmap
@@ -27,6 +33,18 @@ This branch is one large product upgrade. Do not merge to `main` until the compl
 - [x] Added standard WPM support.
 - [x] Added character-speed/effective-speed separation.
 - [x] Added Farnsworth-ready spacing calculations.
+- [x] Added character timeline generation for audio scheduling and future input analysis.
+
+### Audio engine
+- [x] Added browser-safe Web Audio engine abstraction.
+- [x] Added tone frequency controls.
+- [x] Added volume controls.
+- [x] Added waveform controls.
+- [x] Added envelope attack/release controls.
+- [x] Added scheduled dot/dash playback from Morse timelines.
+- [x] Added named beginner/comfortable/standard/fast/expert audio profiles.
+- [ ] Integrate playback controls into learner UI.
+- [ ] Add browser/device audio QA.
 
 ### Curriculum
 - [x] Expanded from the original 10-level prototype to a staged 64-lesson Morse path.
