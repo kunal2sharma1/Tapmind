@@ -14,7 +14,8 @@
     "validate:adaptive": "node scripts/validate-adaptive.mjs",
     "validate:reviews": "node scripts/validate-review-scheduler.mjs",
     "validate:daily": "node scripts/validate-daily-learning.mjs",
-    "validate:words": "node scripts/validate-words.mjs"
+    "validate:words": "node scripts/validate-words.mjs",
+    "validate:sentences": "node scripts/validate-sentences.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
