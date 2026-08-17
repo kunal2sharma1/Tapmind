@@ -4,6 +4,7 @@ import Sidebar from "./components/Sidebar";
 import MainContent from "./components/MainContent";
 import MorseAudioControls from "./components/MorseAudioControls";
 import MorseLearningModeSelector from "./components/MorseLearningModeSelector";
+import MorseLearningSession from "./components/MorseLearningSession";
 import levelsData from "./modules/morse/levels.json";
 import useProgress from "./hooks/useProgress";
 import { MORSE_LEARNING_MODES } from "./modules/morse/learningModes";
@@ -30,6 +31,13 @@ export default function App() {
     setCurrentLevel(levelNumber);
   }
 
+  const sessionProps = {
+    mode: learningMode,
+    currentCharacter,
+    currentLevel,
+    recordAttempt,
+  };
+
   return (
     <div className="app-shell">
       <Navbar activeNav={activeNav} onNavChange={setActiveNav} />
@@ -46,19 +54,25 @@ export default function App() {
             value={learningMode}
             onChange={setLearningMode}
           />
-          <MainContent
-            selectedLevel={selectedLevel}
-            activeNav={activeNav}
-            currentLevel={currentLevel}
-            currentLesson={currentLesson}
-            currentCharacter={currentCharacter}
-            levels={levels}
-            learningMode={learningMode}
-            onLevelSelect={handleLevelSelect}
-            recordAttempt={recordAttempt}
-            completeLevel={completeLevel}
-          />
-          {currentCharacter?.morse && (
+
+          {learningMode === MORSE_LEARNING_MODES.LEARN ? (
+            <MainContent
+              selectedLevel={selectedLevel}
+              activeNav={activeNav}
+              currentLevel={currentLevel}
+              currentLesson={currentLesson}
+              currentCharacter={currentCharacter}
+              levels={levels}
+              learningMode={learningMode}
+              onLevelSelect={handleLevelSelect}
+              recordAttempt={recordAttempt}
+              completeLevel={completeLevel}
+            />
+          ) : (
+            <MorseLearningSession {...sessionProps} />
+          )}
+
+          {learningMode === MORSE_LEARNING_MODES.LEARN && currentCharacter?.morse && (
             <MorseAudioControls
               morse={currentCharacter.morse}
               label={`Listen to ${currentCharacter.letter}`}
