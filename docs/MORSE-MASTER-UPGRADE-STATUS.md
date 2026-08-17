@@ -12,13 +12,11 @@ Automatic Vercel deployment is disabled for this upgrade branch. `main` remains 
 
 ## Current phase
 
-**Phase 5 — Learning Modes — IN PROGRESS**
-
-**Phase status:** approximately 55% complete.
+**Phase 5 — Learning Modes — COMPLETE**
 
 **Next phase:** Phase 6 — Exercise Generation Engine.
 
-Phases 2, 3 and 4 are complete development phases. Phase 5 currently has the canonical mode engine, mode policies, learning-mode exercise contract, learner-facing mode selector, and validation tooling. Full replacement of the legacy lesson flow with mode-specific exercise execution remains before Phase 5 can be marked complete.
+Phases 2, 3, 4 and 5 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
 
 ## Phase 2 — Curriculum Architecture — COMPLETE
 
@@ -74,7 +72,7 @@ Phases 2, 3 and 4 are complete development phases. Phase 5 currently has the can
 - [x] Kept calibration diagnostics separate from progression/mastery so Phase 4 does not prematurely bias learning outcomes.
 - [x] Documented the normalized input contract and future hardware adapter boundary.
 
-## Phase 5 — Learning Modes — IN PROGRESS
+## Phase 5 — Learning Modes — COMPLETE
 
 - [x] Defined canonical learning modes: Learn, Recognition, Recall, Audio Recognition, Audio Recall, Sending, Mixed Practice.
 - [x] Defined skill mappings for every learning mode.
@@ -83,14 +81,16 @@ Phases 2, 3 and 4 are complete development phases. Phase 5 currently has the can
 - [x] Added response validation and binary Phase-5 scoring rules.
 - [x] Added mode eligibility/policy rules for future mastery-aware gating.
 - [x] Added learner-facing training-mode selector.
-- [x] Added learning-mode specification documentation.
-- [x] Added learning-mode validation command.
-- [ ] Replace the legacy practice/test flow with mode-specific exercise execution.
-- [ ] Add audio recognition choice flow.
-- [ ] Add audio recall flow.
-- [ ] Add dedicated recognition/recall UI states.
-- [ ] Integrate mode selection into session records and progression.
-- [ ] Add mode-specific feedback without prematurely coupling to mastery.
+- [x] Added executable learning session for non-Learn modes.
+- [x] Added visible Morse recognition with controlled distractors.
+- [x] Added character recall through the Phase-4 Morse input system.
+- [x] Added audio recognition with explicit play/replay interaction.
+- [x] Added audio recall with explicit play/replay interaction.
+- [x] Added sending mode with raw timing feedback preserved.
+- [x] Added mixed practice that rotates across previously built skill modes.
+- [x] Added five-exercise session lifecycle with score summary and restart path.
+- [x] Kept timing-quality data diagnostic-only; formal mastery weighting remains later.
+- [x] Added mode-specific feedback without coupling it to the future mastery engine.
 
 ## Not yet released
 
