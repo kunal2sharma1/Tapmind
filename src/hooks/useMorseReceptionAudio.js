@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createMorseAudioEngine } from "../modules/morse/audio";
 import { MORSE_TIMING } from "../modules/morse/timing";
+import { REALISM_LEVELS, getRealismProfile } from "../modules/morse/realisticMorse";
 
 export default function useMorseReceptionAudio() {
   const engine = useMemo(() => createMorseAudioEngine(), []);
@@ -13,7 +14,11 @@ export default function useMorseReceptionAudio() {
     toneHz: MORSE_TIMING.DEFAULT_TONE_HZ,
     volume: 0.15,
     waveform: "sine",
+    realismLevel: REALISM_LEVELS.CLEAN,
+    seed: 1,
   });
+
+  const realism = useMemo(() => getRealismProfile(settings.realismLevel), [settings.realismLevel]);
 
   useEffect(() => () => engine.close(), [engine]);
 
@@ -23,7 +28,11 @@ export default function useMorseReceptionAudio() {
     setIsPlaying(true);
     try {
       engine.stop();
-      const result = await engine.playMessage(morseMessage, { ...settings, ...overrides });
+      const nextSettings = { ...settings, ...overrides };
+      const result = await engine.playMessage(morseMessage, {
+        ...nextSettings,
+        realism: getRealismProfile(nextSettings.realismLevel, nextSettings.realism),
+      });
       window.setTimeout(() => setIsPlaying(false), result.durationMs + 100);
       return result;
     } catch (error) {
@@ -42,5 +51,5 @@ export default function useMorseReceptionAudio() {
     setSettings((previous) => ({ ...previous, [name]: value }));
   }
 
-  return { isPlaying, lastError, settings, playMessage, stop, updateSetting };
+  return { isPlaying, lastError, settings, realism, playMessage, stop, updateSetting };
 }
