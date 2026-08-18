@@ -1,0 +1,56 @@
+name: TapMind Upgrade CI
+
+on:
+  push:
+    branches:
+      - upgrade/morse-master-product
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout upgrade branch
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate curriculum
+        run: npm run validate:curriculum
+      - name: Validate learning modes
+        run: npm run validate:learning-modes
+      - name: Validate exercise generator
+        run: npm run validate:exercises
+      - name: Validate mastery
+        run: npm run validate:mastery
+      - name: Validate adaptive learning
+        run: npm run validate:adaptive
+      - name: Validate review scheduler
+        run: npm run validate:reviews
+      - name: Validate daily learning
+        run: npm run validate:daily
+      - name: Validate words
+        run: npm run validate:words
+      - name: Validate sentences
+        run: npm run validate:sentences
+      - name: Validate speed engine
+        run: npm run validate:speed
+      - name: Validate reception
+        run: npm run validate:reception
+      - name: Validate realistic Morse
+        run: npm run validate:realistic-morse
+      - name: Validate challenges
+        run: npm run validate:challenges
+
+      - name: Production build
+        run: npm run build
