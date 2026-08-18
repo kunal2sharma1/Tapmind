@@ -22,21 +22,13 @@ function assertWpm(value, name) {
   return value;
 }
 
-/**
- * Standard Morse unit duration derived from the PARIS 50-unit convention.
- * At 1 WPM, one unit is 1.2 seconds; at 20 WPM it is 60 ms.
- */
 export function unitDurationMs(wpm) {
   assertWpm(wpm, "WPM");
   return (60_000 * 1.2) / (wpm * 50);
 }
 
-/**
- * Resolve standard timing for a single character.
- */
 export function getStandardTiming(wpm) {
   const unitMs = unitDurationMs(wpm);
-
   return {
     wpm,
     characterWpm: wpm,
@@ -49,28 +41,16 @@ export function getStandardTiming(wpm) {
   };
 }
 
-/**
- * Resolve Farnsworth timing.
- *
- * Signal elements are sent at characterWpm. Additional spacing is distributed
- * between the four inter-character gaps and one inter-word gap in the standard
- * 31/19 PARIS decomposition. When overallWpm >= characterWpm, standard timing
- * is returned because no extra spacing is necessary.
- */
 export function getFarnsworthTiming(overallWpm, characterWpm = overallWpm) {
   assertWpm(overallWpm, "Overall WPM");
   assertWpm(characterWpm, "Character WPM");
 
-  if (overallWpm >= characterWpm) {
-    return getStandardTiming(characterWpm);
-  }
+  if (overallWpm >= characterWpm) return getStandardTiming(characterWpm);
 
   const characterUnitMs = unitDurationMs(characterWpm);
   const overallUnitMs = unitDurationMs(overallWpm);
   const baseCharacterGapMs = characterUnitMs * MORSE_TIMING.CHARACTER_GAP_UNITS;
   const baseWordGapMs = characterUnitMs * MORSE_TIMING.WORD_GAP_UNITS;
-
-  // A PARIS word contains 31 element/intra-element units and 19 spacing units.
   const targetWordMs = overallUnitMs * MORSE_TIMING.PARIS_UNITS;
   const characterContentMs = characterUnitMs * MORSE_TIMING.PARIS_ELEMENT_UNITS;
   const additionalSpacingMs = Math.max(0, targetWordMs - characterContentMs);
@@ -89,64 +69,50 @@ export function getFarnsworthTiming(overallWpm, characterWpm = overallWpm) {
   };
 }
 
-/**
- * Resolve the timing profile used by audio generation and input validation.
- */
-export function resolveTiming({
-  wpm = MORSE_TIMING.DEFAULT_WPM,
-  characterWpm = wpm,
-  mode = "standard"
-} = {}) {
-  if (mode === "farnsworth") {
-    return getFarnsworthTiming(wpm, characterWpm);
-  }
-
-  return getStandardTiming(wpm);
+export function resolveTiming({ wpm = MORSE_TIMING.DEFAULT_WPM, characterWpm = wpm, mode = "standard" } = {}) {
+  return mode === "farnsworth" ? getFarnsworthTiming(wpm, characterWpm) : getStandardTiming(wpm);
 }
 
-/**
- * Convert a Morse pattern into timed audio/input events.
- * Events use an absolute offset from the beginning of the pattern and are
- * suitable for either Web Audio scheduling or input/timing analysis.
- */
 export function buildCharacterTimeline(morse, timing = getStandardTiming()) {
   if (typeof morse !== "string" || morse.length === 0) return [];
-  if (!/^[.-]+$/.test(morse)) {
-    throw new Error("A Morse character must contain only '.' and '-' symbols");
-  }
+  if (!/^[.-]+$/.test(morse)) throw new Error("A Morse character must contain only '.' and '-' symbols");
 
   const events = [];
   let offsetMs = 0;
-
   morse.split("").forEach((symbol, index) => {
     const durationMs = symbol === "." ? timing.dotMs : timing.dashMs;
-
-    events.push({
-      type: symbol === "." ? "dot" : "dash",
-      symbol,
-      offsetMs,
-      durationMs
-    });
-
+    events.push({ type: symbol === "." ? "dot" : "dash", symbol, offsetMs, durationMs });
     offsetMs += durationMs;
+    if (index < morse.length - 1) offsetMs += timing.elementGapMs;
+  });
+  return events;
+}
 
-    if (index < morse.length - 1) {
-      offsetMs += timing.elementGapMs;
-    }
+export function buildMessageTimeline(morseMessage, timing = getStandardTiming()) {
+  if (typeof morseMessage !== "string" || !morseMessage.trim()) return [];
+  const words = morseMessage.trim().split(/\s+\/\s+|\s{3,}/);
+  const events = [];
+  let offsetMs = 0;
+
+  words.forEach((word, wordIndex) => {
+    const characters = word.split(/\s+/).filter(Boolean);
+    characters.forEach((character, characterIndex) => {
+      const timeline = buildCharacterTimeline(character, timing);
+      timeline.forEach((event) => {
+        events.push({ ...event, offsetMs: offsetMs + event.offsetMs, wordIndex, characterIndex });
+      });
+      const characterDuration = timeline.reduce((end, event) => Math.max(end, event.offsetMs + event.durationMs), 0);
+      offsetMs += characterDuration;
+      if (characterIndex < characters.length - 1) offsetMs += timing.characterGapMs;
+    });
+    if (wordIndex < words.length - 1) offsetMs += timing.wordGapMs;
   });
 
   return events;
 }
 
-/**
- * Calculate the duration occupied by a single Morse character, excluding
- * the inter-character gap that follows it.
- */
 export function characterDurationMs(morse, timing = getStandardTiming()) {
-  return buildCharacterTimeline(morse, timing).reduce(
-    (total, event) => total + event.durationMs,
-    0
-  ) + Math.max(0, morse.length - 1) * timing.elementGapMs;
+  return buildCharacterTimeline(morse, timing).reduce((total, event) => total + event.durationMs, 0);
 }
 
 export function isValidWpm(wpm) {
