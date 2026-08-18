@@ -8,11 +8,14 @@ import MorseLearningSession from "./components/MorseLearningSession";
 import MorseSentenceSession from "./components/MorseSentenceSession";
 import MorseSpeedSession from "./components/MorseSpeedSession";
 import MorseReceptionSession from "./components/MorseReceptionSession";
+import MorseChallengeHub from "./components/MorseChallengeHub";
 import MorseMasteryCard from "./components/MorseMasteryCard";
 import MorseDailyPlan from "./components/MorseDailyPlan";
 import levelsData from "./modules/morse/levels.json";
 import useProgress from "./hooks/useProgress";
 import useSpeedProgress from "./hooks/useSpeedProgress";
+import useReceptionProgress from "./hooks/useReceptionProgress";
+import useChallengeProgress from "./hooks/useChallengeProgress";
 import useDailyLearning from "./hooks/useDailyLearning";
 import { MORSE_LEARNING_MODES } from "./modules/morse/learningModes";
 import { buildCurriculum, getLessonByLevel } from "./domain/curriculum";
@@ -31,6 +34,8 @@ export default function App() {
     getMastery,
   } = useProgress();
   const { profile: speedProfile, recordSpeedAttempt } = useSpeedProgress();
+  const { profile: receptionProfile } = useReceptionProgress();
+  const { progress: challengeProgress, recordAttempt: recordChallengeAttempt } = useChallengeProgress();
   const [activeNav, setActiveNav] = useState("Learning");
   const [selectedLevel, setSelectedLevel] = useState(progress.currentLevel || 1);
   const [learningMode, setLearningMode] = useState(MORSE_LEARNING_MODES.LEARN);
@@ -59,6 +64,14 @@ export default function App() {
         ? RECEPTION_DIFFICULTIES.BASIC
         : RECEPTION_DIFFICULTIES.FOUNDATION;
 
+  const challengeContext = useMemo(() => ({
+    introducedCharacterCount: introducedCharacters.length,
+    bestEffectiveWpm: speedProfile.bestEffectiveWpm,
+    bestCharacterAccuracy: receptionProfile.bestCharacterAccuracy,
+    receptionReady: receptionProfile.completedSessions > 0,
+    completedChallenges: Object.keys(challengeProgress.completed ?? {}),
+  }), [introducedCharacters.length, speedProfile.bestEffectiveWpm, receptionProfile.bestCharacterAccuracy, receptionProfile.completedSessions, challengeProgress.completed]);
+
   function handleLevelSelect(levelNumber) {
     if (!isLevelUnlocked(levelNumber)) return;
     setSelectedLevel(levelNumber);
@@ -83,6 +96,7 @@ export default function App() {
   const showSentences = activeNav === "Sentences";
   const showSpeed = activeNav === "Speed";
   const showReception = activeNav === "Reception";
+  const showChallenges = activeNav === "Challenges";
 
   return (
     <div className="app-shell">
@@ -147,6 +161,14 @@ export default function App() {
             <MorseReceptionSession
               maxDifficulty={receptionDifficulty}
               introducedCharacters={introducedCharacters}
+            />
+          )}
+
+          {showChallenges && (
+            <MorseChallengeHub
+              context={challengeContext}
+              progress={challengeProgress}
+              onResult={(challenge, result) => recordChallengeAttempt(challenge.id, result)}
             />
           )}
         </div>
