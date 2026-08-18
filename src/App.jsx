@@ -7,6 +7,7 @@ import MorseLearningModeSelector from "./components/MorseLearningModeSelector";
 import MorseLearningSession from "./components/MorseLearningSession";
 import MorseSentenceSession from "./components/MorseSentenceSession";
 import MorseSpeedSession from "./components/MorseSpeedSession";
+import MorseReceptionSession from "./components/MorseReceptionSession";
 import MorseMasteryCard from "./components/MorseMasteryCard";
 import MorseDailyPlan from "./components/MorseDailyPlan";
 import levelsData from "./modules/morse/levels.json";
@@ -15,6 +16,7 @@ import useSpeedProgress from "./hooks/useSpeedProgress";
 import useDailyLearning from "./hooks/useDailyLearning";
 import { MORSE_LEARNING_MODES } from "./modules/morse/learningModes";
 import { buildCurriculum, getLessonByLevel } from "./domain/curriculum";
+import { RECEPTION_DIFFICULTIES } from "./modules/morse/reception";
 import "./styles/global.css";
 import "./styles/learning-column.css";
 
@@ -49,6 +51,13 @@ export default function App() {
   const { summary, startOrRefresh } = useDailyLearning({ progress, introducedCharacters });
   const sentenceMastery = progress.sentenceMastery ?? {};
   const sentenceDifficulty = selectedLevel >= 55 ? 4 : selectedLevel >= 45 ? 3 : selectedLevel >= 35 ? 2 : 1;
+  const receptionDifficulty = selectedLevel >= 50
+    ? RECEPTION_DIFFICULTIES.ADVANCED
+    : selectedLevel >= 38
+      ? RECEPTION_DIFFICULTIES.OPERATIONAL
+      : selectedLevel >= 25
+        ? RECEPTION_DIFFICULTIES.BASIC
+        : RECEPTION_DIFFICULTIES.FOUNDATION;
 
   function handleLevelSelect(levelNumber) {
     if (!isLevelUnlocked(levelNumber)) return;
@@ -73,6 +82,7 @@ export default function App() {
   const showWords = activeNav === "Words";
   const showSentences = activeNav === "Sentences";
   const showSpeed = activeNav === "Speed";
+  const showReception = activeNav === "Reception";
 
   return (
     <div className="app-shell">
@@ -130,6 +140,13 @@ export default function App() {
               characters={introducedCharacters}
               profile={speedProfile}
               onComplete={(nextProfile) => recordSpeedAttempt(nextProfile)}
+            />
+          )}
+
+          {showReception && (
+            <MorseReceptionSession
+              maxDifficulty={receptionDifficulty}
+              introducedCharacters={introducedCharacters}
             />
           )}
         </div>
