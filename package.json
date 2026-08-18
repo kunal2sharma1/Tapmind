@@ -16,7 +16,8 @@
     "validate:daily": "node scripts/validate-daily-learning.mjs",
     "validate:words": "node scripts/validate-words.mjs",
     "validate:sentences": "node scripts/validate-sentences.mjs",
-    "validate:speed": "node scripts/validate-speed.mjs"
+    "validate:speed": "node scripts/validate-speed.mjs",
+    "validate:reception": "node scripts/validate-reception.mjs"
   },
   "dependencies": {
     "react": "^18.3.1",
