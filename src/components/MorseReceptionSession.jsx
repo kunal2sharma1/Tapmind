@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import useMorseReceptionAudio from "../hooks/useMorseReceptionAudio";
+import useReceptionProgress from "../hooks/useReceptionProgress";
 import { buildReceptionSession, RECEPTION_DIFFICULTIES, scoreReceptionCopy } from "../modules/morse/reception";
 import "./MorseReceptionSession.css";
 
@@ -9,10 +10,7 @@ function formatTime(ms) {
   return `${(ms / 1000).toFixed(1)}s`;
 }
 
-export default function MorseReceptionSession({
-  maxDifficulty = RECEPTION_DIFFICULTIES.ADVANCED,
-  introducedCharacters = null,
-}) {
+export default function MorseReceptionSession({ maxDifficulty = RECEPTION_DIFFICULTIES.ADVANCED }) {
   const [wpm, setWpm] = useState(10);
   const [startedAt, setStartedAt] = useState(null);
   const [step, setStep] = useState(0);
@@ -21,6 +19,7 @@ export default function MorseReceptionSession({
   const [completed, setCompleted] = useState(false);
   const [results, setResults] = useState([]);
   const { isPlaying, playMessage, stop } = useMorseReceptionAudio();
+  const { profile, recordAttempt, recordSessionComplete } = useReceptionProgress();
 
   const session = useMemo(
     () => buildReceptionSession({ count: SESSION_LENGTH, maxDifficulty, seed: 17, wpm, characterWpm: wpm }),
@@ -50,11 +49,13 @@ export default function MorseReceptionSession({
     const result = scoreReceptionCopy(message.text, copy, elapsedMs);
     setFeedback(result);
     setResults((previous) => [...previous, result]);
+    recordAttempt(result);
   }
 
   function next() {
     if (step + 1 >= SESSION_LENGTH) {
       setCompleted(true);
+      recordSessionComplete();
       stop();
       return;
     }
@@ -88,6 +89,11 @@ export default function MorseReceptionSession({
           <span>Target speed: {wpm} WPM</span>
           <input type="range" min="5" max="40" step="1" value={wpm} onChange={(event) => setWpm(Number(event.target.value))} />
         </label>
+        <div className="reception-profile">
+          <span>Best character accuracy: {profile.bestCharacterAccuracy}%</span>
+          <span>Best word accuracy: {profile.bestWordAccuracy}%</span>
+          <span>Best effective WPM: {profile.bestEffectiveWpm}</span>
+        </div>
         <button type="button" className="ctrl-btn btn-next" onClick={begin}>Start Reception Session →</button>
       </section>
     );
