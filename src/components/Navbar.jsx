@@ -1,6 +1,6 @@
 import "./Navbar.css";
 
-const NAV_ITEMS = ["Learning", "Words", "Sentences", "Morse"];
+const NAV_ITEMS = ["Learning", "Words", "Sentences", "Speed", "Morse"];
 
 export default function Navbar({ activeNav, onNavChange }) {
   return (
