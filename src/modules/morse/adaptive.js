@@ -1,5 +1,5 @@
-import { getWeakestSkills, calculateOverallMastery } from "./mastery";
-import { MORSE_LEARNING_MODES } from "./learningModes";
+import { getWeakestSkills, calculateOverallMastery } from "./mastery.js";
+import { MORSE_LEARNING_MODES } from "./learningModes.js";
 
 const MODE_FOR_SKILL = Object.freeze({
   recognition: MORSE_LEARNING_MODES.RECOGNITION,
@@ -37,13 +37,9 @@ function scoreCandidate(candidate, stats = {}, weakSkills = []) {
   score += (1 - clamp(accuracy / 100)) * 0.15;
   score += clamp(recencyHours / (24 * 7)) * 0.10;
 
-  const symbol = candidate?.symbol;
-  if (weakSkills.some((item) => item.skill && item.score < 50)) {
-    score += 0.10;
-  }
-
+  if (weakSkills.some((item) => item.skill && item.score < 50)) score += 0.10;
   if (candidate?.difficulty === "advanced" && mastery < 60) score -= 0.10;
-  if (symbol && stats.recentlyFailed) score += 0.15;
+  if (candidate?.symbol && stats.recentlyFailed) score += 0.15;
 
   return clamp(score);
 }
@@ -112,7 +108,7 @@ export function buildAdaptiveSessionPlan({
   seed = 1
 } = {}) {
   const length = Math.max(1, Math.floor(sessionLength));
-  const ranked = rankAdaptiveCandidates({ candidates }, { characterMastery });
+  const ranked = rankAdaptiveCandidates(candidates, { characterMastery });
   const sorted = ranked.map((entry) => entry.candidate);
   const countWeak = Math.max(1, Math.round(length * weights.weak));
   const countReinforce = Math.max(0, Math.round(length * weights.reinforce));
