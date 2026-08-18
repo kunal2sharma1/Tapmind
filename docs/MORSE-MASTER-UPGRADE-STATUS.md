@@ -12,11 +12,32 @@ Automatic Vercel deployment is disabled for this upgrade branch. `main` remains 
 
 ## Current phase
 
-**Phase 13 — Speed Engine — COMPLETE**
+**Phase 14 — Reception Training — COMPLETE**
 
-**Next phase:** Phase 14 — Reception Training.
+**Next phase:** Phase 15 — Realistic Morse.
 
-Phases 2 through 13 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
+Phases 2 through 14 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
+
+## Phase 14 — Reception Training — COMPLETE
+
+- [x] Added continuous reception message corpus with foundation, basic, operational and advanced difficulty tiers.
+- [x] Added canonical text-to-Morse encoding shared with word/sentence layers.
+- [x] Added message-level Morse timing with explicit inter-character and inter-word gaps.
+- [x] Added continuous Web Audio message playback rather than isolated character playback.
+- [x] Added five-message reception sessions.
+- [x] Added learner-selected target WPM from 5–40 WPM.
+- [x] Added continuous copy textarea for real-message transcription.
+- [x] Added character accuracy scoring.
+- [x] Added word accuracy scoring.
+- [x] Added edit-distance scoring.
+- [x] Added effective WPM measurement starting at first playback.
+- [x] Added reception pass/fail gate.
+- [x] Added persistent reception performance in `tapmind.reception.v1`.
+- [x] Added best character accuracy, best word accuracy and best effective WPM tracking.
+- [x] Added reception difficulty gating from the learner's current curriculum stage.
+- [x] Added learner-facing Reception navigation and session UI.
+- [x] Added `validate:reception` validation command.
+- [x] Added Phase-14 reception specification documentation.
 
 ## Phase 13 — Speed Engine — COMPLETE
 
@@ -29,7 +50,7 @@ Phases 2 through 13 are complete development phases. Browser/device QA, comprehe
 - [x] Added personal best and qualified-speed tracking.
 - [x] Added deterministic timed speed-session generation using only introduced characters.
 - [x] Added learner-facing timed speed trainer with WPM controls and replay.
-- [x] Added isolated persistent speed progress via `tapmind.speed.v1` to avoid destabilizing the shared progress schema.
+- [x] Added isolated persistent speed progress via `tapmind.speed.v1`.
 - [x] Added `validate:speed` validation command.
 - [x] Added Phase-13 speed-engine specification/documentation.
 
@@ -46,6 +67,7 @@ Phases 2 through 13 are complete development phases. Browser/device QA, comprehe
 - [x] Added Morse audio playback for complete messages.
 - [x] Added Morse input for sentence recall and audio recall.
 - [x] Added sentence-level progress tracking independent of character mastery.
+- [x] Added `tapmind.progress.v5` sentenceMastery with migration from earlier progress versions.
 - [x] Added Sentences navigation in the learner shell.
 - [x] Added `validate:sentences` validation command.
 - [x] Added Phase-12 specification documentation.
@@ -64,24 +86,15 @@ Phases 2 through 13 are complete development phases. Browser/device QA, comprehe
 - [x] Added word exercise scoring.
 - [x] Added learner-facing Words navigation and dedicated word-learning session.
 - [x] Added word-level progress tracking separate from character mastery.
-- [x] Added `tapmind.progress.v5` with persisted `wordMastery` and migrations from earlier progress versions.
+- [x] Added `tapmind.progress.v5` with persisted `wordMastery`.
 - [x] Added `validate:words` validation command.
 - [x] Added Phase-11 specification documentation.
 
 ## Earlier completed phases
 
 ### Phase 10 — Daily Learning System — COMPLETE
-
 - [x] Added daily session planning based on due reviews, mastery weaknesses and introduced curriculum scope.
-- [x] Added configurable daily session duration and exercise-count bounds.
-- [x] Added review-first session composition when reviews are due.
-- [x] Added adaptive-practice allocation after due reviews.
-- [x] Added controlled new-material allocation rather than unrestricted content expansion.
-- [x] Added weakest-skill summary to the daily plan.
-- [x] Added deterministic date-based daily session IDs.
-- [x] Added resumable daily-session persistence through `tapmind.daily.v1`.
-- [x] Added learner-facing daily plan card.
-- [x] Added `validate:daily` validation command.
+- [x] Added configurable daily session duration, review-first composition, adaptive allocation, controlled new material, deterministic IDs, persistence and `validate:daily`.
 
 ### Phase 9 — Spaced Repetition Scheduler — COMPLETE
 - [x] Added review phases, quality levels, interval growth, lapse handling, due ranking, persistence and `validate:reviews`.
@@ -109,7 +122,6 @@ Phases 2 through 13 are complete development phases. Browser/device QA, comprehe
 
 ## Not yet released
 
-- [ ] Phase 14 reception training
 - [ ] Phase 15 realistic Morse
 - [ ] Phase 16 challenge system
 - [ ] Phase 17 progress system expansion
