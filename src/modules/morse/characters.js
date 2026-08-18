@@ -1,4 +1,4 @@
-import catalog from "./characters.json";
+import catalog from "./characters.json" with { type: "json" };
 
 export const MORSE_CHARACTERS = Object.freeze(catalog.characters);
 
