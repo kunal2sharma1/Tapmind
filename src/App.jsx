@@ -6,10 +6,12 @@ import MorseAudioControls from "./components/MorseAudioControls";
 import MorseLearningModeSelector from "./components/MorseLearningModeSelector";
 import MorseLearningSession from "./components/MorseLearningSession";
 import MorseSentenceSession from "./components/MorseSentenceSession";
+import MorseSpeedSession from "./components/MorseSpeedSession";
 import MorseMasteryCard from "./components/MorseMasteryCard";
 import MorseDailyPlan from "./components/MorseDailyPlan";
 import levelsData from "./modules/morse/levels.json";
 import useProgress from "./hooks/useProgress";
+import useSpeedProgress from "./hooks/useSpeedProgress";
 import useDailyLearning from "./hooks/useDailyLearning";
 import { MORSE_LEARNING_MODES } from "./modules/morse/learningModes";
 import { buildCurriculum, getLessonByLevel } from "./domain/curriculum";
@@ -26,6 +28,7 @@ export default function App() {
     isLevelUnlocked,
     getMastery,
   } = useProgress();
+  const { profile: speedProfile, recordSpeedAttempt } = useSpeedProgress();
   const [activeNav, setActiveNav] = useState("Learning");
   const [selectedLevel, setSelectedLevel] = useState(progress.currentLevel || 1);
   const [learningMode, setLearningMode] = useState(MORSE_LEARNING_MODES.LEARN);
@@ -39,18 +42,11 @@ export default function App() {
   const currentMastery = getMastery(currentCharacter?.letter ?? currentCharacter?.symbol ?? "");
 
   const introducedCharacters = useMemo(
-    () => curriculum
-      .slice(0, Math.max(1, selectedLevel))
-      .map((item) => item.character)
-      .filter(Boolean),
+    () => curriculum.slice(0, Math.max(1, selectedLevel)).map((item) => item.character).filter(Boolean),
     [curriculum, selectedLevel]
   );
 
-  const { summary, startOrRefresh } = useDailyLearning({
-    progress,
-    introducedCharacters,
-  });
-
+  const { summary, startOrRefresh } = useDailyLearning({ progress, introducedCharacters });
   const sentenceMastery = progress.sentenceMastery ?? {};
   const sentenceDifficulty = selectedLevel >= 55 ? 4 : selectedLevel >= 45 ? 3 : selectedLevel >= 35 ? 2 : 1;
 
@@ -72,33 +68,21 @@ export default function App() {
     if (item === "Learning" || item === "Morse") setLearningMode(MORSE_LEARNING_MODES.LEARN);
   }
 
-  const sessionProps = {
-    mode: learningMode,
-    currentCharacter,
-    currentLevel,
-    recordAttempt,
-  };
-
+  const sessionProps = { mode: learningMode, currentCharacter, currentLevel, recordAttempt };
   const showCharacters = activeNav === "Learning" || activeNav === "Morse";
   const showWords = activeNav === "Words";
   const showSentences = activeNav === "Sentences";
+  const showSpeed = activeNav === "Speed";
 
   return (
     <div className="app-shell">
       <Navbar activeNav={activeNav} onNavChange={handleNavigation} />
       <div className="app-body">
         {showCharacters && (
-          <Sidebar
-            levels={levels}
-            selectedLevel={selectedLevel}
-            onLevelSelect={handleLevelSelect}
-            progress={progress}
-            isLevelUnlocked={isLevelUnlocked}
-          />
+          <Sidebar levels={levels} selectedLevel={selectedLevel} onLevelSelect={handleLevelSelect} progress={progress} isLevelUnlocked={isLevelUnlocked} />
         )}
         <div className="learning-column">
           {showCharacters && <MorseDailyPlan summary={summary} onStart={startDailySession} />}
-
           {showCharacters && <MorseLearningModeSelector value={learningMode} onChange={setLearningMode} />}
 
           {showCharacters && (
@@ -115,21 +99,14 @@ export default function App() {
                 recordAttempt={recordAttempt}
                 completeLevel={completeLevel}
               />
-            ) : (
-              <MorseLearningSession {...sessionProps} />
-            )
+            ) : <MorseLearningSession {...sessionProps} />
           )}
 
           {showCharacters && learningMode === MORSE_LEARNING_MODES.LEARN && currentCharacter?.morse && (
             <MorseAudioControls morse={currentCharacter.morse} label={`Listen to ${currentCharacter.letter}`} />
           )}
 
-          {showCharacters && (
-            <MorseMasteryCard
-              symbol={currentCharacter?.letter ?? currentCharacter?.symbol}
-              mastery={currentMastery}
-            />
-          )}
+          {showCharacters && <MorseMasteryCard symbol={currentCharacter?.letter ?? currentCharacter?.symbol} mastery={currentMastery} />}
 
           {showWords && (
             <section className="card">
@@ -145,6 +122,14 @@ export default function App() {
               sentenceMastery={sentenceMastery}
               maxDifficulty={sentenceDifficulty}
               onAttempt={(exercise, result) => recordSentenceAttempt(exercise.target.id, result.correct)}
+            />
+          )}
+
+          {showSpeed && (
+            <MorseSpeedSession
+              characters={introducedCharacters}
+              profile={speedProfile}
+              onComplete={(nextProfile) => recordSpeedAttempt(nextProfile)}
             />
           )}
         </div>
