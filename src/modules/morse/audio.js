@@ -1,11 +1,12 @@
 import { buildCharacterTimeline, buildMessageTimeline, resolveTiming } from "./timing";
+import { getRealismProfile, transformTimelineForRealism, REALISM_LEVELS, calculateSignalQuality } from "./realisticMorse";
 
 export const AUDIO_DEFAULTS = Object.freeze({
   toneHz: 600,
   volume: 0.15,
   waveform: "sine",
   attackMs: 4,
-  releaseMs: 8
+  releaseMs: 8,
 });
 
 function clamp(value, min, max) {
@@ -23,10 +24,21 @@ function normalizeAudioOptions(options = {}) {
   return { toneHz, volume, attackMs, releaseMs, waveform };
 }
 
+function createNoiseBuffer(audioContext, durationSeconds) {
+  const frameCount = Math.max(1, Math.ceil(audioContext.sampleRate * durationSeconds));
+  const buffer = audioContext.createBuffer(1, frameCount, audioContext.sampleRate);
+  const data = buffer.getChannelData(0);
+  for (let index = 0; index < frameCount; index += 1) {
+    data[index] = Math.random() * 2 - 1;
+  }
+  return buffer;
+}
+
 export function createMorseAudioEngine({ AudioContextClass } = {}) {
   let context = null;
   let masterGain = null;
   let activeSources = new Set();
+  let activeNodes = new Set();
 
   function getAudioContextConstructor() {
     if (AudioContextClass) return AudioContextClass;
@@ -55,14 +67,67 @@ export function createMorseAudioEngine({ AudioContextClass } = {}) {
     for (const source of activeSources) {
       try { source.stop(); } catch { /* already ended */ }
     }
+    for (const node of activeNodes) {
+      try { node.disconnect(); } catch { /* already disconnected */ }
+    }
     activeSources.clear();
+    activeNodes.clear();
   }
 
-  function scheduleTimeline(audioContext, timeline, options, onEvent) {
+  function scheduleBackgroundEffects(audioContext, options, realism, startAt, durationMs) {
+    const created = [];
+    const durationSeconds = Math.max(0.05, durationMs / 1_000);
+
+    if (realism.noiseLevel > 0) {
+      const source = audioContext.createBufferSource();
+      const noiseGain = audioContext.createGain();
+      const filter = audioContext.createBiquadFilter();
+      source.buffer = createNoiseBuffer(audioContext, durationSeconds + 0.2);
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(2_800, startAt);
+      noiseGain.gain.setValueAtTime(realism.noiseLevel * options.volume, startAt);
+      source.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(masterGain);
+      source.start(startAt);
+      source.stop(startAt + durationSeconds + 0.05);
+      created.push(source, noiseGain, filter);
+      activeSources.add(source);
+    }
+
+    if (realism.interferenceLevel > 0) {
+      const oscillator = audioContext.createOscillator();
+      const gain = audioContext.createGain();
+      oscillator.type = "triangle";
+      oscillator.frequency.setValueAtTime(Math.max(45, options.toneHz / 2.4), startAt);
+      gain.gain.setValueAtTime(realism.interferenceLevel * options.volume, startAt);
+      oscillator.connect(gain);
+      gain.connect(masterGain);
+      oscillator.start(startAt);
+      oscillator.stop(startAt + durationSeconds + 0.05);
+      created.push(oscillator, gain);
+      activeSources.add(oscillator);
+    }
+
+    return created;
+  }
+
+  function scheduleTimeline(audioContext, timeline, options, onEvent, realism) {
     const startAt = audioContext.currentTime + 0.02;
-    masterGain.gain.setValueAtTime(options.volume, startAt);
+    const signalQuality = calculateSignalQuality(realism);
+    const normalizedRealism = getRealismProfile(realism?.level ?? REALISM_LEVELS.CLEAN, realism);
+    const signalVolumeScale = normalizedRealism.volumeScale;
+    masterGain.gain.setValueAtTime(options.volume * signalVolumeScale, startAt);
+
+    const durationMs = timeline.reduce((end, event) => Math.max(end, event.offsetMs + event.durationMs), 0);
+    scheduleBackgroundEffects(audioContext, options, normalizedRealism, startAt, durationMs);
 
     timeline.forEach((event, index) => {
+      if (event.realism?.dropped) {
+        onEvent?.({ ...event, index, dropped: true, signalQuality });
+        return;
+      }
+
       const oscillator = audioContext.createOscillator();
       const gain = audioContext.createGain();
       const start = startAt + event.offsetMs / 1_000;
@@ -76,34 +141,75 @@ export function createMorseAudioEngine({ AudioContextClass } = {}) {
       gain.gain.linearRampToValueAtTime(1, start + attack);
       gain.gain.setValueAtTime(1, Math.max(start + attack, end - release));
       gain.gain.linearRampToValueAtTime(0, end);
+
+      if (normalizedRealism.fadeDepth > 0) {
+        const fadePhase = start * normalizedRealism.fadeRateHz * Math.PI * 2;
+        const fade = clamp(1 - normalizedRealism.fadeDepth * (0.5 + 0.5 * Math.sin(fadePhase)), 0.15, 1);
+        gain.gain.setValueAtTime(fade, start + attack);
+      }
+
       oscillator.connect(gain);
       gain.connect(masterGain);
       oscillator.start(start);
       oscillator.stop(end + 0.005);
       activeSources.add(oscillator);
       oscillator.addEventListener?.("ended", () => activeSources.delete(oscillator));
-      onEvent?.({ ...event, index, startAtMs: event.offsetMs, endAtMs: event.offsetMs + event.durationMs });
+
+      onEvent?.({
+        ...event,
+        index,
+        dropped: false,
+        signalQuality,
+        startAtMs: event.offsetMs,
+        endAtMs: event.offsetMs + event.durationMs,
+      });
     });
 
-    return timeline.reduce((end, event) => Math.max(end, event.offsetMs + event.durationMs), 0);
+    return durationMs;
   }
 
-  async function playPattern(morse, { wpm, characterWpm, timingMode = "standard", toneHz, volume, waveform, attackMs, releaseMs, onEvent } = {}) {
+  async function playPattern(morse, {
+    wpm,
+    characterWpm,
+    timingMode = "standard",
+    toneHz,
+    volume,
+    waveform,
+    attackMs,
+    releaseMs,
+    realism = { level: REALISM_LEVELS.CLEAN },
+    seed = 0,
+    onEvent,
+  } = {}) {
     const audioContext = await resume();
     const timing = resolveTiming({ wpm, characterWpm, mode: timingMode });
     const options = normalizeAudioOptions({ toneHz, volume, waveform, attackMs, releaseMs });
-    const timeline = buildCharacterTimeline(morse, timing);
-    const durationMs = scheduleTimeline(audioContext, timeline, options, onEvent);
-    return { timing, durationMs, events: timeline };
+    const profile = getRealismProfile(realism.level, realism);
+    const timeline = transformTimelineForRealism(buildCharacterTimeline(morse, timing), profile, seed);
+    const durationMs = scheduleTimeline(audioContext, timeline, options, onEvent, profile);
+    return { timing, durationMs, events: timeline, realism: profile, signalQuality: calculateSignalQuality(profile) };
   }
 
-  async function playMessage(morseMessage, { wpm, characterWpm, timingMode = "standard", toneHz, volume, waveform, attackMs, releaseMs, onEvent } = {}) {
+  async function playMessage(morseMessage, {
+    wpm,
+    characterWpm,
+    timingMode = "standard",
+    toneHz,
+    volume,
+    waveform,
+    attackMs,
+    releaseMs,
+    realism = { level: REALISM_LEVELS.CLEAN },
+    seed = 0,
+    onEvent,
+  } = {}) {
     const audioContext = await resume();
     const timing = resolveTiming({ wpm, characterWpm, mode: timingMode });
     const options = normalizeAudioOptions({ toneHz, volume, waveform, attackMs, releaseMs });
-    const timeline = buildMessageTimeline(morseMessage, timing);
-    const durationMs = scheduleTimeline(audioContext, timeline, options, onEvent);
-    return { timing, durationMs, events: timeline };
+    const profile = getRealismProfile(realism.level, realism);
+    const timeline = transformTimelineForRealism(buildMessageTimeline(morseMessage, timing), profile, seed);
+    const durationMs = scheduleTimeline(audioContext, timeline, options, onEvent, profile);
+    return { timing, durationMs, events: timeline, realism: profile, signalQuality: calculateSignalQuality(profile) };
   }
 
   function setMasterVolume(volume) {
