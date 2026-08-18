@@ -12,7 +12,7 @@ function formatTime(ms) {
 
 export default function MorseReceptionSession({ maxDifficulty = RECEPTION_DIFFICULTIES.ADVANCED }) {
   const [wpm, setWpm] = useState(10);
-  const [startedAt, setStartedAt] = useState(null);
+  const [playStartedAt, setPlayStartedAt] = useState(null);
   const [step, setStep] = useState(0);
   const [copy, setCopy] = useState("");
   const [feedback, setFeedback] = useState(null);
@@ -30,7 +30,7 @@ export default function MorseReceptionSession({ maxDifficulty = RECEPTION_DIFFIC
   const progressText = `${step + 1} / ${SESSION_LENGTH}`;
 
   function begin() {
-    setStartedAt(performance.now());
+    setPlayStartedAt(null);
     setStep(0);
     setCopy("");
     setFeedback(null);
@@ -40,12 +40,13 @@ export default function MorseReceptionSession({ maxDifficulty = RECEPTION_DIFFIC
   }
 
   async function play() {
+    if (!playStartedAt) setPlayStartedAt(performance.now());
     await playMessage(message.encoded.morse);
   }
 
   function submit() {
-    if (!startedAt || feedback) return;
-    const elapsedMs = performance.now() - startedAt;
+    if (!playStartedAt || feedback) return;
+    const elapsedMs = performance.now() - playStartedAt;
     const result = scoreReceptionCopy(message.text, copy, elapsedMs);
     setFeedback(result);
     setResults((previous) => [...previous, result]);
@@ -60,13 +61,14 @@ export default function MorseReceptionSession({ maxDifficulty = RECEPTION_DIFFIC
       return;
     }
     setStep((value) => value + 1);
+    setPlayStartedAt(null);
     setCopy("");
     setFeedback(null);
     stop();
   }
 
   function restart() {
-    setStartedAt(null);
+    setPlayStartedAt(null);
     setCompleted(false);
     setStep(0);
     setCopy("");
@@ -77,7 +79,7 @@ export default function MorseReceptionSession({ maxDifficulty = RECEPTION_DIFFIC
 
   if (!message) return null;
 
-  if (!startedAt) {
+  if (!playStartedAt && !completed && !feedback && step === 0 && results.length === 0 && copy === "") {
     return (
       <section className="morse-reception card">
         <p className="card-label">Reception training</p>
@@ -94,7 +96,21 @@ export default function MorseReceptionSession({ maxDifficulty = RECEPTION_DIFFIC
           <span>Best word accuracy: {profile.bestWordAccuracy}%</span>
           <span>Best effective WPM: {profile.bestEffectiveWpm}</span>
         </div>
-        <button type="button" className="ctrl-btn btn-next" onClick={begin}>Start Reception Session →</button>
+        <button type="button" className="ctrl-btn btn-next" onClick={() => setPlayStartedAt(0)}>Start Reception Session →</button>
+      </section>
+    );
+  }
+
+  if (playStartedAt === 0) {
+    return (
+      <section className="morse-reception card">
+        <p className="card-label">Reception ready</p>
+        <h2>Message 1 / {SESSION_LENGTH}</h2>
+        <p className="instruction-hint">Press play when you are ready. The copy timer starts with the first playback.</p>
+        <button type="button" className="ctrl-btn btn-next" onClick={play} disabled={isPlaying}>
+          {isPlaying ? "Playing…" : "▶ Play Message"}
+        </button>
+        <button type="button" className="ctrl-btn btn-retry" onClick={begin}>Reset</button>
       </section>
     );
   }
@@ -150,7 +166,7 @@ export default function MorseReceptionSession({ maxDifficulty = RECEPTION_DIFFIC
       </div>
 
       {!feedback ? (
-        <button type="button" className="ctrl-btn btn-check" onClick={submit} disabled={!copy.trim()}>
+        <button type="button" className="ctrl-btn btn-check" onClick={submit} disabled={!copy.trim() || !playStartedAt}>
           Check Copy
         </button>
       ) : (
