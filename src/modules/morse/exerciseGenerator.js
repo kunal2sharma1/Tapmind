@@ -1,9 +1,9 @@
-import { MORSE_CHARACTERS, getLetters, getNumbers, getPunctuation, getProsigns } from "./characters";
+import { MORSE_CHARACTERS, getLetters, getNumbers, getPunctuation, getProsigns } from "./characters.js";
 import {
   createLearningExercise,
   MORSE_LEARNING_MODES,
-} from "./learningModes";
-import { rankAdaptiveCandidates } from "./adaptive";
+} from "./learningModes.js";
+import { rankAdaptiveCandidates } from "./adaptive.js";
 
 export const MORSE_DIFFICULTIES = Object.freeze({
   INTRODUCTORY: "introductory",
