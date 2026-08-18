@@ -1,4 +1,4 @@
-import { MORSE_LEARNING_MODES } from "./learningModes";
+import { MORSE_LEARNING_MODES } from "./learningModes.js";
 
 const DEFAULT_POLICY = Object.freeze({
   minMasteryScore: 0,
