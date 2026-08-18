@@ -83,13 +83,21 @@ function candidateWeight(character, context) {
 }
 
 function deterministicPick(items, count, seed = 0) {
-  if (items.length <= count) return [...items];
+  const unique = [];
+  const seen = new Set();
+  for (const item of items) {
+    if (!item?.id || seen.has(item.id)) continue;
+    seen.add(item.id);
+    unique.push(item);
+  }
+
+  if (unique.length <= count) return unique.slice(0, count);
 
   const result = [];
-  let cursor = Math.abs(Math.floor(seed)) % items.length;
+  let cursor = Math.abs(Math.floor(seed)) % unique.length;
   while (result.length < count) {
-    const item = items[cursor % items.length];
-    if (!result.includes(item)) result.push(item);
+    const item = unique[cursor % unique.length];
+    if (!result.some((selected) => selected.id === item.id)) result.push(item);
     cursor += 7;
   }
   return result;
@@ -154,9 +162,10 @@ export function buildDistractors(target, {
   if (!target) return [];
 
   const desiredCount = Math.max(0, Math.floor(count));
+  if (desiredCount === 0) return [];
+
   const targetDifficulty = difficulty ? normalizeDifficulty(difficulty) : getCharacterDifficulty(target);
   const pool = getPool(category).filter((character) => character.id !== target.id);
-
   const sameDifficulty = pool.filter((character) => getCharacterDifficulty(character) === targetDifficulty);
   const confusionPool = sameDifficulty.length >= desiredCount ? sameDifficulty : pool;
   const ranked = rankCharacters(confusionPool, context).map((entry) => entry.character);
@@ -193,6 +202,8 @@ export function generateExercise({
     seed: seed + 13,
   });
 
+  const choices = deterministicPick([selected, ...distractors], 1 + distractors.length, seed + 29);
+
   return Object.freeze({
     ...createLearningExercise({
       mode,
@@ -203,7 +214,7 @@ export function generateExercise({
       },
     }),
     generator: Object.freeze({
-      version: 2,
+      version: 3,
       category,
       selectedDifficulty: getCharacterDifficulty(selected),
       candidatesConsidered: available.length,
@@ -211,7 +222,7 @@ export function generateExercise({
       seed,
       adaptive: Boolean(context.characterMastery),
     }),
-    choices: Object.freeze([selected, ...distractors]),
+    choices: Object.freeze(choices),
   });
 }
 
