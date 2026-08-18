@@ -1,0 +1,108 @@
+.morse-reception {
+  display: grid;
+  gap: 18px;
+}
+
+.morse-reception-intro {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.morse-reception-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.reception-speed-badge {
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.06);
+  font-weight: 700;
+}
+
+.reception-setting {
+  display: grid;
+  gap: 8px;
+}
+
+.reception-setting input {
+  width: 100%;
+}
+
+.reception-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.reception-copy-box {
+  width: 100%;
+  min-height: 170px;
+  resize: vertical;
+  padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.14);
+  border-radius: 12px;
+  font: inherit;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+.reception-meta,
+.reception-profile {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  font-size: 0.9rem;
+  opacity: 0.78;
+}
+
+.reception-feedback {
+  display: grid;
+  gap: 6px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.reception-feedback strong {
+  font-size: 1.1rem;
+}
+
+.reception-feedback em {
+  margin-top: 6px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.reception-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.reception-metrics strong,
+.reception-metrics span {
+  display: block;
+}
+
+.reception-metrics strong {
+  font-size: 1.7rem;
+}
+
+.reception-metrics span {
+  font-size: 0.82rem;
+  opacity: 0.7;
+}
+
+@media (max-width: 680px) {
+  .morse-reception-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .reception-metrics {
+    grid-template-columns: 1fr;
+  }
+}
