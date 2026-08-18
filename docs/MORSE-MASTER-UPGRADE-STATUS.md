@@ -12,11 +12,26 @@ Automatic Vercel deployment is disabled for this upgrade branch. `main` remains 
 
 ## Current phase
 
-**Phase 12 — Sentence Learning — COMPLETE**
+**Phase 13 — Speed Engine — COMPLETE**
 
-**Next phase:** Phase 13 — Speed Engine.
+**Next phase:** Phase 14 — Reception Training.
 
-Phases 2 through 12 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
+Phases 2 through 13 are complete development phases. Browser/device QA, comprehensive automated testing, full local build verification and final end-to-end verification remain part of the final release QA scope.
+
+## Phase 13 — Speed Engine — COMPLETE
+
+- [x] Added explicit character-speed and effective-speed profile model.
+- [x] Added standard and Farnsworth-ready speed timing through the existing timing engine.
+- [x] Added progressive WPM tiers from beginner through fast-reception targets.
+- [x] Added accuracy, measured effective WPM and response-time evaluation.
+- [x] Added speed pass gates requiring both accuracy and minimum correct-count thresholds.
+- [x] Added speed-target advancement after a qualified pass.
+- [x] Added personal best and qualified-speed tracking.
+- [x] Added deterministic timed speed-session generation using only introduced characters.
+- [x] Added learner-facing timed speed trainer with WPM controls and replay.
+- [x] Added isolated persistent speed progress via `tapmind.speed.v1` to avoid destabilizing the shared progress schema.
+- [x] Added `validate:speed` validation command.
+- [x] Added Phase-13 speed-engine specification/documentation.
 
 ## Phase 12 — Sentence Learning — COMPLETE
 
@@ -31,7 +46,6 @@ Phases 2 through 12 are complete development phases. Browser/device QA, comprehe
 - [x] Added Morse audio playback for complete messages.
 - [x] Added Morse input for sentence recall and audio recall.
 - [x] Added sentence-level progress tracking independent of character mastery.
-- [x] Added `tapmind.progress.v5` sentenceMastery with migration from earlier progress versions.
 - [x] Added Sentences navigation in the learner shell.
 - [x] Added `validate:sentences` validation command.
 - [x] Added Phase-12 specification documentation.
@@ -95,7 +109,6 @@ Phases 2 through 12 are complete development phases. Browser/device QA, comprehe
 
 ## Not yet released
 
-- [ ] Phase 13 speed engine
 - [ ] Phase 14 reception training
 - [ ] Phase 15 realistic Morse
 - [ ] Phase 16 challenge system
