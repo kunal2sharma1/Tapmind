@@ -1,4 +1,4 @@
-import { buildCharacterTimeline, resolveTiming } from "./timing";
+import { buildCharacterTimeline, buildMessageTimeline, resolveTiming } from "./timing";
 
 export const AUDIO_DEFAULTS = Object.freeze({
   toneHz: 600,
@@ -20,7 +20,6 @@ function normalizeAudioOptions(options = {}) {
   const waveform = ["sine", "square", "triangle", "sawtooth"].includes(options.waveform)
     ? options.waveform
     : AUDIO_DEFAULTS.waveform;
-
   return { toneHz, volume, attackMs, releaseMs, waveform };
 }
 
@@ -37,12 +36,8 @@ export function createMorseAudioEngine({ AudioContextClass } = {}) {
 
   function ensureContext() {
     if (context) return context;
-
     const Constructor = getAudioContextConstructor();
-    if (!Constructor) {
-      throw new Error("Web Audio API is not available in this environment");
-    }
-
+    if (!Constructor) throw new Error("Web Audio API is not available in this environment");
     context = new Constructor();
     masterGain = context.createGain();
     masterGain.gain.value = AUDIO_DEFAULTS.volume;
@@ -58,32 +53,13 @@ export function createMorseAudioEngine({ AudioContextClass } = {}) {
 
   function stop() {
     for (const source of activeSources) {
-      try {
-        source.stop();
-      } catch {
-        // The source may already have ended.
-      }
+      try { source.stop(); } catch { /* already ended */ }
     }
     activeSources.clear();
   }
 
-  async function playPattern(morse, {
-    wpm,
-    characterWpm,
-    timingMode = "standard",
-    toneHz,
-    volume,
-    waveform,
-    attackMs,
-    releaseMs,
-    onEvent
-  } = {}) {
-    const audioContext = await resume();
-    const timing = resolveTiming({ wpm, characterWpm, mode: timingMode });
-    const options = normalizeAudioOptions({ toneHz, volume, waveform, attackMs, releaseMs });
-    const timeline = buildCharacterTimeline(morse, timing);
+  function scheduleTimeline(audioContext, timeline, options, onEvent) {
     const startAt = audioContext.currentTime + 0.02;
-
     masterGain.gain.setValueAtTime(options.volume, startAt);
 
     timeline.forEach((event, index) => {
@@ -96,33 +72,38 @@ export function createMorseAudioEngine({ AudioContextClass } = {}) {
 
       oscillator.type = options.waveform;
       oscillator.frequency.setValueAtTime(options.toneHz, start);
-
       gain.gain.setValueAtTime(0, start);
       gain.gain.linearRampToValueAtTime(1, start + attack);
       gain.gain.setValueAtTime(1, Math.max(start + attack, end - release));
       gain.gain.linearRampToValueAtTime(0, end);
-
       oscillator.connect(gain);
       gain.connect(masterGain);
       oscillator.start(start);
       oscillator.stop(end + 0.005);
-
       activeSources.add(oscillator);
       oscillator.addEventListener?.("ended", () => activeSources.delete(oscillator));
-
-      onEvent?.({
-        ...event,
-        index,
-        startAtMs: event.offsetMs,
-        endAtMs: event.offsetMs + event.durationMs
-      });
+      onEvent?.({ ...event, index, startAtMs: event.offsetMs, endAtMs: event.offsetMs + event.durationMs });
     });
 
-    return {
-      timing,
-      durationMs: timeline.reduce((end, event) => Math.max(end, event.offsetMs + event.durationMs), 0),
-      events: timeline
-    };
+    return timeline.reduce((end, event) => Math.max(end, event.offsetMs + event.durationMs), 0);
+  }
+
+  async function playPattern(morse, { wpm, characterWpm, timingMode = "standard", toneHz, volume, waveform, attackMs, releaseMs, onEvent } = {}) {
+    const audioContext = await resume();
+    const timing = resolveTiming({ wpm, characterWpm, mode: timingMode });
+    const options = normalizeAudioOptions({ toneHz, volume, waveform, attackMs, releaseMs });
+    const timeline = buildCharacterTimeline(morse, timing);
+    const durationMs = scheduleTimeline(audioContext, timeline, options, onEvent);
+    return { timing, durationMs, events: timeline };
+  }
+
+  async function playMessage(morseMessage, { wpm, characterWpm, timingMode = "standard", toneHz, volume, waveform, attackMs, releaseMs, onEvent } = {}) {
+    const audioContext = await resume();
+    const timing = resolveTiming({ wpm, characterWpm, mode: timingMode });
+    const options = normalizeAudioOptions({ toneHz, volume, waveform, attackMs, releaseMs });
+    const timeline = buildMessageTimeline(morseMessage, timing);
+    const durationMs = scheduleTimeline(audioContext, timeline, options, onEvent);
+    return { timing, durationMs, events: timeline };
   }
 
   function setMasterVolume(volume) {
@@ -133,19 +114,10 @@ export function createMorseAudioEngine({ AudioContextClass } = {}) {
 
   function close() {
     stop();
-    if (context && context.close) {
-      context.close();
-    }
+    if (context && context.close) context.close();
     context = null;
     masterGain = null;
   }
 
-  return Object.freeze({
-    ensureContext,
-    resume,
-    playPattern,
-    stop,
-    setMasterVolume,
-    close
-  });
+  return Object.freeze({ ensureContext, resume, playPattern, playMessage, stop, setMasterVolume, close });
 }
